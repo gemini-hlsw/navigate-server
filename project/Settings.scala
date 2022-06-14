@@ -35,7 +35,7 @@ object Settings {
     val log4Cats         = "2.2.0"
     val log4CatsLogLevel = "0.3.0"
 
-    val http4s      = "1.0.0-M32"
+    val http4s      = "1.0.0-M27"
     val squants     = "1.8.2"
     val commonsHttp = "2.0.2"
     val unboundId   = "3.2.1"
