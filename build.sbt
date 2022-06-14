@@ -9,12 +9,10 @@ import NativePackagerHelper._
 import sbtcrossproject.CrossType
 import com.typesafe.sbt.packager.docker._
 
-
-
 //lazy val attoVersion                 = "0.8.0"
 //lazy val catsVersion                 = "2.1.1"
 //lazy val collCompatVersion           = "2.1.6"
-lazy val kindProjectorVersion        = "0.13.2"
+lazy val kindProjectorVersion = "0.13.2"
 //lazy val monocleVersion              = "2.0.5"
 //lazy val catsTestkitScalaTestVersion = "1.0.1"
 //lazy val scalaJavaTimeVersion        = "2.0.0"
@@ -30,15 +28,19 @@ Global / semanticdbEnabled := true
 ThisBuild / Compile / packageDoc / publishArtifact := false
 ThisBuild / Test / bspEnabled                      := false
 
-inThisBuild(Seq(
-  homepage := Some(url("https://github.com/gemini-hlsw/engage")),
-  addCompilerPlugin(("org.typelevel" %% "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)),
-  scalacOptions += "-Ymacro-annotations",
-  Global / onChangedBuildSource := ReloadOnSourceChanges,
-  scalafixDependencies ++= List(ClueGenerator, LucumaSchemas),
-  scalafixScalaBinaryVersion                               := "2.13",
-  ScalafixConfig / bspEnabled.withRank(KeyRanks.Invisible) := false
-) ++ lucumaPublishSettings)
+inThisBuild(
+  Seq(
+    homepage                                                 := Some(url("https://github.com/gemini-hlsw/engage")),
+    addCompilerPlugin(
+      ("org.typelevel"                                       %% "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)
+    ),
+    scalacOptions += "-Ymacro-annotations",
+    Global / onChangedBuildSource                            := ReloadOnSourceChanges,
+    scalafixDependencies ++= List(ClueGenerator, LucumaSchemas),
+    scalafixScalaBinaryVersion                               := "2.13",
+    ScalafixConfig / bspEnabled.withRank(KeyRanks.Invisible) := false
+  ) ++ lucumaPublishSettings
+)
 
 // Gemini repository
 ThisBuild / resolvers ++= Seq(
@@ -91,7 +93,7 @@ publish / skip := true
 lazy val epics = project
   .in(file("modules/epics"))
   .settings(
-    name := "epics",
+    name                     := "epics",
     libraryDependencies ++= Seq(
       Cats.value,
       CatsEffect.value,
@@ -109,18 +111,18 @@ lazy val engage_web_server = project
   .enablePlugins(GitBranchPrompt)
   .settings(commonSettings: _*)
   .settings(
-    name := "engage_web_server",
+    name                 := "engage_web_server",
     addCompilerPlugin(Plugins.kindProjectorPlugin),
     libraryDependencies ++= Seq(UnboundId,
-      JwtCore,
-      JwtCirce,
-      CommonsHttp,
-      ScalaMock,
-      Log4CatsNoop.value,
-      CatsEffect.value,
-      Log4Cats.value,
-      BooPickle.value,
-      Http4sBoopickle
+                                JwtCore,
+                                JwtCirce,
+                                CommonsHttp,
+                                ScalaMock,
+                                Log4CatsNoop.value,
+                                CatsEffect.value,
+                                Log4Cats.value,
+                                BooPickle.value,
+                                Http4sBoopickle
     ) ++
       Http4sClient ++ Http4s ++ PureConfig ++ Logging.value,
     // Supports launching the server in the background
@@ -305,8 +307,6 @@ lazy val app_engage_server = preventPublication(project.in(file("app/engage-serv
     }
   )
 
-
-
 /**
  * Common settings for the Engage instances
  */
@@ -357,4 +357,3 @@ lazy val engageCommonSettings = Seq(
     "-java-home ${app_home}/../jre" // This breaks builds without jre
   )
 ) ++ commonSettings
-
