@@ -10,7 +10,7 @@ object Settings {
   /** Library versions */
   object LibraryVersions {
     // ScalaJS libraries
-    val scalaDom                = "2.1.0"
+    val scalaDom                = "2.2.0"
     val scalajsReact            = "2.1.1"
     val booPickle               = "1.4.0"
     val javaTimeJS              = "2.4.0"
@@ -18,32 +18,32 @@ object Settings {
     val scalaJSSemanticUI       = "0.13.1"
     val scalaJSReactVirtualized = "0.13.1"
     val scalaJSReactClipboard   = "1.5.1"
-    val scalaJSReactDraggable   = "0.14.3"
+    val scalaJSReactDraggable   = "0.16.0"
     val scalaJSReactSortable    = "0.5.2"
 
     // Scala libraries
-    val catsEffect   = "3.3.5"
+    val catsEffect   = "3.3.12"
     val cats         = "2.7.0"
-    val mouse        = "1.0.7"
-    val fs2          = "3.2.4"
+    val mouse        = "1.0.11"
+    val fs2          = "3.2.8"
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
     val catsTime     = "0.5.0"
 
     // Logging
-    val log4Cats         = "2.2.0"
-    val log4CatsLogLevel = "0.3.0"
+    val log4Cats         = "2.3.1"
+    val log4CatsLogLevel = "0.3.1"
 
     val http4s      = "1.0.0-M27"
-    val squants     = "1.8.2"
+    val squants     = "1.8.3"
     val commonsHttp = "2.0.2"
     val unboundId   = "3.2.1"
     val jwt         = "5.0.0"
-    val slf4j       = "1.7.35"
+    val slf4j       = "1.7.36"
     val log4s       = "1.10.0"
     val logback     = "1.2.11"
-    val janino      = "3.1.6"
+    val janino      = "3.1.7"
     val logstash    = "7.0"
     val pureConfig  = "0.17.1"
     val monocle     = "3.1.0"
@@ -57,7 +57,7 @@ object Settings {
     val scalaMock                   = "5.2.0"
     lazy val munitVersion           = "0.7.29"
     lazy val munitDisciplineVersion = "1.0.9"
-    lazy val munitCatsEffectVersion = "1.0.6"
+    lazy val munitCatsEffectVersion = "1.0.7"
 
     val apacheXMLRPC        = "3.1.3"
     val opencsv             = "2.3"
@@ -75,7 +75,7 @@ object Settings {
     val guava               = "31.0.1-jre"
     val prometheusClient    = "0.14.1"
     val geminiLocales       = "0.7.0"
-    val pprint              = "0.6.6"
+    val pprint              = "0.7.3"
     val jaxb                = "3.0.1"
 
     // EPICS Libraries
@@ -89,12 +89,12 @@ object Settings {
 
     // Lucuma
     val lucumaCore    = "0.24.0"
-    val lucumaUI      = "0.25.0"
+    val lucumaUI      = "0.25.1"
     val lucumaSchemas = "0.11.0"
 
-    val clue = "0.20.2"
+    val clue = "0.20.3"
 
-    val sttp = "3.5.1"
+    val sttp = "3.5.2"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"
