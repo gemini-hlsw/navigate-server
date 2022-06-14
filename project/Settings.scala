@@ -89,12 +89,12 @@ object Settings {
 
     // Lucuma
     val lucumaCore    = "0.24.0"
-    val lucumaUI      = "0.25.1"
-    val lucumaSchemas = "0.11.0"
+    val lucumaUI      = "0.36.3"
+    val lucumaSchemas = "0.26.0"
 
-    val clue = "0.20.3"
+    val clue = "0.22.0"
 
-    val sttp = "3.5.2"
+    val sttp = "3.6.2"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"
