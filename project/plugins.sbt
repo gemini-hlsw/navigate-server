@@ -1,6 +1,6 @@
 resolvers += Resolver.sonatypeRepo("public")
 
-addSbtPlugin("edu.gemini"         % "sbt-lucuma"               % "0.3.9")
+addSbtPlugin("edu.gemini"         % "sbt-lucuma"               % "0.8.6")
 addSbtPlugin("com.geirsson"       % "sbt-ci-release"           % "1.5.7")
 addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "1.10.0")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.2.0")
