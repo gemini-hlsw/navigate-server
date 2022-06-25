@@ -2,7 +2,7 @@ resolvers += Resolver.sonatypeRepo("public")
 
 addSbtPlugin("edu.gemini"         % "sbt-lucuma"               % "0.3.9")
 addSbtPlugin("com.geirsson"       % "sbt-ci-release"           % "1.5.7")
-addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "1.10.0")
+addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "1.10.1")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.2.0")
 // sbt revolver lets launching applications from the sbt console
 addSbtPlugin("io.spray"           % "sbt-revolver"             % "0.9.1")
