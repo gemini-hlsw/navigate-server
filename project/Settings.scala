@@ -89,7 +89,7 @@ object Settings {
 
     // Lucuma
     val lucumaCore    = "0.24.0"
-    val lucumaUI      = "0.36.3"
+    val lucumaUI      = "0.36.8"
     val lucumaSchemas = "0.30.3"
 
     val clue = "0.23.0"
