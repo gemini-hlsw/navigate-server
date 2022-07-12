@@ -22,9 +22,9 @@ object Settings {
     val scalaJSReactSortable    = "0.5.2"
 
     // Scala libraries
-    val catsEffect   = "3.3.12"
-    val cats         = "2.7.0"
-    val mouse        = "1.0.11"
+    val catsEffect   = "3.3.13"
+    val cats         = "2.8.0"
+    val mouse        = "1.1.0"
     val fs2          = "3.2.8"
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
@@ -32,7 +32,7 @@ object Settings {
     val catsTime     = "0.5.0"
 
     // Logging
-    val log4Cats         = "2.3.1"
+    val log4Cats         = "2.3.2"
     val log4CatsLogLevel = "0.3.1"
 
     val http4s      = "1.0.0-M27"
@@ -90,9 +90,9 @@ object Settings {
     // Lucuma
     val lucumaCore    = "0.24.0"
     val lucumaUI      = "0.36.3"
-    val lucumaSchemas = "0.27.0"
+    val lucumaSchemas = "0.30.3"
 
-    val clue = "0.22.0"
+    val clue = "0.23.0"
 
     val sttp = "3.6.2"
 
