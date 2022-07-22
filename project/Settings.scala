@@ -39,7 +39,7 @@ object Settings {
     val squants     = "1.8.3"
     val commonsHttp = "2.0.2"
     val unboundId   = "3.2.1"
-    val jwt         = "5.0.0"
+    val jwt         = "9.0.6"
     val slf4j       = "1.7.36"
     val log4s       = "1.10.0"
     val logback     = "1.2.11"
@@ -102,15 +102,15 @@ object Settings {
    */
   object Libraries {
     // Test Libraries
-    val TestLibs       = Def.setting(
+    val TestLibs    = Def.setting(
       "org.typelevel" %%% "cats-testkit-scalatest" % "2.1.5" % "test"
     )
-    val MUnit          = Def.setting(
+    val MUnit       = Def.setting(
       Seq(
         "org.typelevel" %% "munit-cats-effect-3" % LibraryVersions.munitCatsEffectVersion % Test
       )
     )
-    val XmlUnit        = "xmlunit" % "xmlunit" % LibraryVersions.xmlUnit % "test"
+    val XmlUnit     = "xmlunit"            % "xmlunit"            % LibraryVersions.xmlUnit   % "test"
     val ScalaMock   = "org.scalamock"     %% "scalamock"          % LibraryVersions.scalaMock % "test"
     // Server side libraries
     val Cats        = Def.setting("org.typelevel" %%% "cats-core" % LibraryVersions.cats)
