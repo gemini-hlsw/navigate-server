@@ -86,7 +86,7 @@ object Settings {
     // Lucuma
     val lucumaCore    = "0.44.0"
     val lucumaUI      = "0.37.0"
-    val lucumaSchemas = "0.31.0"
+    val lucumaSchemas = "0.32.0"
 
     val clue = "0.23.1"
 
@@ -102,15 +102,15 @@ object Settings {
    */
   object Libraries {
     // Test Libraries
-    val TestLibs       = Def.setting(
+    val TestLibs    = Def.setting(
       "org.typelevel" %%% "cats-testkit-scalatest" % "2.1.5" % "test"
     )
-    val MUnit          = Def.setting(
+    val MUnit       = Def.setting(
       Seq(
         "org.typelevel" %% "munit-cats-effect-3" % LibraryVersions.munitCatsEffectVersion % Test
       )
     )
-    val XmlUnit        = "xmlunit" % "xmlunit" % LibraryVersions.xmlUnit % "test"
+    val XmlUnit     = "xmlunit"            % "xmlunit"            % LibraryVersions.xmlUnit   % "test"
     val ScalaMock   = "org.scalamock"     %% "scalamock"          % LibraryVersions.scalaMock % "test"
     // Server side libraries
     val Cats        = Def.setting("org.typelevel" %%% "cats-core" % LibraryVersions.cats)
