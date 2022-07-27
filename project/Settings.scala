@@ -15,8 +15,8 @@ object Settings {
     val booPickle               = "1.4.0"
     val javaTimeJS              = "2.4.0"
     val scalaJSReactCommon      = "0.14.7"
-    val scalaJSSemanticUI       = "0.13.1"
-    val scalaJSReactVirtualized = "0.13.1"
+    val scalaJSSemanticUI       = "0.16.0"
+    val scalaJSReactVirtualized = "0.16.0"
     val scalaJSReactClipboard   = "1.5.1"
     val scalaJSReactDraggable   = "0.16.0"
     val scalaJSReactSortable    = "0.5.2"
@@ -102,15 +102,15 @@ object Settings {
    */
   object Libraries {
     // Test Libraries
-    val TestLibs       = Def.setting(
+    val TestLibs    = Def.setting(
       "org.typelevel" %%% "cats-testkit-scalatest" % "2.1.5" % "test"
     )
-    val MUnit          = Def.setting(
+    val MUnit       = Def.setting(
       Seq(
         "org.typelevel" %% "munit-cats-effect-3" % LibraryVersions.munitCatsEffectVersion % Test
       )
     )
-    val XmlUnit        = "xmlunit" % "xmlunit" % LibraryVersions.xmlUnit % "test"
+    val XmlUnit     = "xmlunit"            % "xmlunit"            % LibraryVersions.xmlUnit   % "test"
     val ScalaMock   = "org.scalamock"     %% "scalamock"          % LibraryVersions.scalaMock % "test"
     // Server side libraries
     val Cats        = Def.setting("org.typelevel" %%% "cats-core" % LibraryVersions.cats)
