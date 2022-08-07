@@ -1,7 +1,7 @@
 resolvers ++= Resolver.sonatypeOssRepos("public")
 
 addDependencyTreePlugin
-addSbtPlugin("edu.gemini"         % "sbt-lucuma-app"           % "0.9.2")
+addSbtPlugin("edu.gemini"         % "sbt-lucuma-app"           % "0.9.3")
 addSbtPlugin("com.geirsson"       % "sbt-ci-release"           % "1.5.7")
 addSbtPlugin("org.scala-js"       % "sbt-scalajs"              % "1.10.0")
 addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject" % "1.2.0")
