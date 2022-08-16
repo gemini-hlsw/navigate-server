@@ -84,7 +84,7 @@ object Settings {
     val gppUI   = "0.0.3"
 
     // Lucuma
-    val lucumaCore    = "0.45.0"
+    val lucumaCore    = "0.46.0"
     val lucumaUI      = "0.39.0"
     val lucumaSchemas = "0.33.0"
 
@@ -124,11 +124,11 @@ object Settings {
     val CommonsHttp = "commons-httpclient" % "commons-httpclient" % LibraryVersions.commonsHttp
     val UnboundId   =
       "com.unboundid" % "unboundid-ldapsdk-minimal-edition" % LibraryVersions.unboundId
-    val JwtCore          = "com.github.jwt-scala" %% "jwt-core" % LibraryVersions.jwt
-    val JwtCirce         = "com.github.jwt-scala" %% "jwt-circe" % LibraryVersions.jwt
-    val Slf4j            = "org.slf4j"      % "slf4j-api"    % LibraryVersions.slf4j
-    val JuliSlf4j        = "org.slf4j"      % "jul-to-slf4j" % LibraryVersions.slf4j
-    val NopSlf4j         = "org.slf4j"      % "slf4j-nop"    % LibraryVersions.slf4j
+    val JwtCore          = "com.github.jwt-scala" %% "jwt-core"     % LibraryVersions.jwt
+    val JwtCirce         = "com.github.jwt-scala" %% "jwt-circe"    % LibraryVersions.jwt
+    val Slf4j            = "org.slf4j"             % "slf4j-api"    % LibraryVersions.slf4j
+    val JuliSlf4j        = "org.slf4j"             % "jul-to-slf4j" % LibraryVersions.slf4j
+    val NopSlf4j         = "org.slf4j"             % "slf4j-nop"    % LibraryVersions.slf4j
     val CatsTime         = Def.setting(
       "org.typelevel" %%% "cats-time" % LibraryVersions.catsTime % "compile->compile;test->test"
     )
