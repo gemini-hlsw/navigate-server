@@ -25,14 +25,14 @@ object RemoteChannel {
   abstract class RemoteChannelImpl[F[_]: Async] extends RemoteChannel[F] {
     val caChannel: CaChannel[_]
 
-    override def connect: F[Unit]                          =
+    override def connect: F[Unit] =
       Async[F].fromCompletableFuture(Async[F].delay(caChannel.connectAsync())).void
     override def connect(timeout: FiniteDuration): F[Unit] = connect.timeout(timeout)
-    override def disconnect: F[Unit]                       = Async[F].delay(caChannel.close())
-    override def getName: F[String]                        = Async[F].delay(caChannel.getName)
-    override def getConnectionState: F[ConnectionState]    =
+    override def disconnect: F[Unit]                    = Async[F].delay(caChannel.close())
+    override def getName: F[String]                     = Async[F].delay(caChannel.getName)
+    override def getConnectionState: F[ConnectionState] =
       Async[F].delay(caChannel.getConnectionState)
-    override def getAccessRights: F[AccessRights]          = Async[F].delay(caChannel.getAccessRights)
+    override def getAccessRights: F[AccessRights]       = Async[F].delay(caChannel.getAccessRights)
   }
 
   implicit def remoteChannelEq[F[_]]: Eq[RemoteChannel[F]] = Eq.instance {

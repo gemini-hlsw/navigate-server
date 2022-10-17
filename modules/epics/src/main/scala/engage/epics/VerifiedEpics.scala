@@ -55,11 +55,11 @@ object VerifiedEpics {
     (m1.toList ++ m2.toList).groupMap(_._1)(_._2).view.mapValues(_.reduce(_ ++ _)).toMap
 
   def pure[F[_], A](v: A): ChannelTracker[F, A] = Const(v)
-  def unit[F[_]]: ChannelTracker[F, Unit]       = pure[F, Unit](())
+  def unit[F[_]]: ChannelTracker[F, Unit] = pure[F, Unit](())
 
   implicit class Ops[F[_], A](v: ChannelTracker[F, A]) extends AnyRef {
-    def ap[B](ff: ChannelTracker[F, A => B]): ChannelTracker[F, B] = Apply(v, ff)
-    def map[B](ff: A => B): ChannelTracker[F, B]                   = ap(pure(ff))
+    def ap[B](ff:  ChannelTracker[F, A => B]): ChannelTracker[F, B] = Apply(v, ff)
+    def map[B](ff: A => B): ChannelTracker[F, B]                    = ap(pure(ff))
   }
 
   type VerifiedEpics[F[_], G[_], A] = ChannelTracker[F, G[A]]
@@ -115,7 +115,7 @@ object VerifiedEpics {
     override val run: Resource[F, Stream[F, StreamEvent[A]]]             = ch.eventStream
   }
 
-  def pureF[F[_], G[_]: Applicative, A](v: A): VerifiedEpics[F, G, A]                         = pure[F, G[A]](v.pure[G])
+  def pureF[F[_], G[_]: Applicative, A](v: A): VerifiedEpics[F, G, A] = pure[F, G[A]](v.pure[G])
   def unit[F[_], G[_]: Applicative]: VerifiedEpics[F, G, Unit]                                =
     pure[F, G[Unit]](Applicative[G].unit)
   def readChannel[F[_], A](tt: TelltaleChannel[F], ch: Channel[F, A]): VerifiedEpics[F, F, A] =

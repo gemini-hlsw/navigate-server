@@ -57,7 +57,7 @@ object TestChannel {
 
   object State {
     def of[A](v: A): State[A] = State(connected = false, v.some)
-    def default[A]: State[A]  = State(connected = false, none)
+    def default[A]: State[A] = State(connected = false, none)
   }
 
 }

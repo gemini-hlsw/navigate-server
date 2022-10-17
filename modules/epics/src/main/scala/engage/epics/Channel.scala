@@ -70,7 +70,7 @@ object Channel {
     cv:                                                                      Convert[T, J]
   ) extends RemoteChannelImpl
       with Channel[F, T] {
-    override val get: F[T]                          =
+    override val get: F[T] =
       Async[F]
         .fromCompletableFuture(Async[F].delay(caChannel.getAsync()))
         .flatMap(x =>
@@ -79,7 +79,7 @@ object Channel {
             .getOrElse(Async[F].raiseError(new Throwable(Status.NOCONVERT.getMessage)))
         )
     override def get(timeout: FiniteDuration): F[T] = get.timeout(timeout)
-    override def put(v: T): F[Unit]                 = cv
+    override def put(v: T): F[Unit] = cv
       .toJava(v)
       .map(a => Async[F].fromCompletableFuture(Async[F].delay(caChannel.putAsync(a))))
       .getOrElse(Status.NOCONVERT.pure[F])

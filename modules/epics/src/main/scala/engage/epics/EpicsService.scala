@@ -44,13 +44,13 @@ object EpicsService {
     serverPort:        Option[Int],
     maxArrayBytes:     Option[Int]
   ) {
-    def withAddressList(l: List[InetAddress]): Builder          = this.copy(addrList = l.some)
-    def withAutoAddrList(enabled: Boolean): Builder             = this.copy(autoAddrList = enabled.some)
+    def withAddressList(l:        List[InetAddress]): Builder = this.copy(addrList = l.some)
+    def withAutoAddrList(enabled: Boolean): Builder           = this.copy(autoAddrList = enabled.some)
     def withConnectionTimeout(timeout: FiniteDuration): Builder =
       this.copy(connectionTimeout = timeout.some)
-    def withRepeaterPort(port: Int): Builder                    = this.copy(repeaterPort = port.some)
-    def withServerPort(port: Int): Builder                      = this.copy(serverPort = port.some)
-    def withMaxArrayBytes(limit: Int): Builder                  = this.copy(maxArrayBytes = limit.some)
+    def withRepeaterPort(port:   Int): Builder = this.copy(repeaterPort = port.some)
+    def withServerPort(port:     Int): Builder = this.copy(serverPort = port.some)
+    def withMaxArrayBytes(limit: Int): Builder = this.copy(maxArrayBytes = limit.some)
 
     def build[F[_]: Async]: Resource[F, EpicsService[F]] = Resource
       .eval {

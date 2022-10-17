@@ -33,7 +33,7 @@ package object epics         {
     override type javaType = JBoolean
     override val clazz: Class[JBoolean]              = classOf[JBoolean]
     override val convert: Convert[Boolean, JBoolean] = new Convert[Boolean, JBoolean] {
-      override def toJava(v: Boolean): Option[JBoolean]   = JBoolean.valueOf(v).some
+      override def toJava(v:   Boolean): Option[JBoolean] = JBoolean.valueOf(v).some
       override def fromJava(x: JBoolean): Option[Boolean] = x.booleanValue().some
     }
   }
@@ -42,7 +42,7 @@ package object epics         {
     override type javaType = JInteger
     override val clazz: Class[JInteger]          = classOf[JInteger]
     override val convert: Convert[Int, JInteger] = new Convert[Int, JInteger] {
-      override def toJava(v: Int): Option[JInteger]   = JInteger.valueOf(v).some
+      override def toJava(v:   Int): Option[JInteger] = JInteger.valueOf(v).some
       override def fromJava(x: JInteger): Option[Int] = x.toInt.some
     }
   }
@@ -51,7 +51,7 @@ package object epics         {
     override type javaType = JDouble
     override val clazz: Class[javaType]            = classOf[JDouble]
     override val convert: Convert[Double, JDouble] = new Convert[Double, JDouble] {
-      override def toJava(v: Double): Option[JDouble]   = JDouble.valueOf(v).some
+      override def toJava(v:   Double): Option[JDouble] = JDouble.valueOf(v).some
       override def fromJava(x: JDouble): Option[Double] = x.toDouble.some
     }
   }
@@ -60,7 +60,7 @@ package object epics         {
     override type javaType = JFloat
     override val clazz: Class[javaType]          = classOf[JFloat]
     override val convert: Convert[Float, JFloat] = new Convert[Float, JFloat] {
-      override def toJava(v: Float): Option[JFloat]   = JFloat.valueOf(v).some
+      override def toJava(v:   Float): Option[JFloat] = JFloat.valueOf(v).some
       override def fromJava(x: JFloat): Option[Float] = x.toFloat.some
     }
   }
@@ -69,7 +69,7 @@ package object epics         {
     override type javaType = String
     override val clazz: Class[javaType]           = classOf[String]
     override val convert: Convert[String, String] = new Convert[String, String] {
-      override def toJava(v: String): Option[String]   = v.some
+      override def toJava(v:   String): Option[String] = v.some
       override def fromJava(x: String): Option[String] = x.some
     }
   }

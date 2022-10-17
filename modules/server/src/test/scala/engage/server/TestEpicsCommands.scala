@@ -9,8 +9,8 @@ import engage.server.tcs.TcsEpicsSystem.BaseCommand
 import monocle.Lens
 
 case class TestEpicsCommands[S, E](cmds: List[State[S, E]]) {
-  def post(s0: S): (S, List[E])                    = cmds.sequence.run(s0).value
-  def add(c: State[S, E]): TestEpicsCommands[S, E] = TestEpicsCommands[S, E](cmds :+ c)
+  def post(s0: S): (S, List[E])                      = cmds.sequence.run(s0).value
+  def add(c:   State[S, E]): TestEpicsCommands[S, E] = TestEpicsCommands[S, E](cmds :+ c)
 }
 
 object TestEpicsCommands {
