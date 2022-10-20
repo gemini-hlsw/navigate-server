@@ -3,29 +3,31 @@
 
 package engage.model.boopickle
 
-import java.time._
-import boopickle.Pickler
 import boopickle.CompositePickler
 import boopickle.Default.UUIDPickler
 import boopickle.Default.compositePickler
 import boopickle.Default.doublePickler
-import boopickle.Default.stringPickler
 import boopickle.Default.generatePickler
 import boopickle.Default.intPickler
 import boopickle.Default.longPickler
 import boopickle.Default.optionPickler
+import boopickle.Default.stringPickler
 import boopickle.Default.transformPickler
+import boopickle.Pickler
 import cats._
 import cats.syntax.all._
+import engage.model.EngageEvent._
+import engage.model._
+import engage.model.enums.ServerLogLevel
+import engage.model.security.UserDetails
+import engage.model.security.UserLoginRequest
 import eu.timepit.refined.api.RefType
 import eu.timepit.refined.types.numeric.PosLong
 import lucuma.core.util.Enumerated
-import engage.model._
-import engage.model.EngageEvent._
-import engage.model.enums.ServerLogLevel
-import engage.model.security.{ UserDetails, UserLoginRequest }
 import squants.time.Time
 import squants.time.TimeConversions._
+
+import java.time._
 
 /**
  * Contains boopickle implicit picklers of model objects Boopickle can auto derive encoders but it

@@ -4,6 +4,8 @@
 package engage.web.client.components
 
 import cats.syntax.all._
+import engage.web.client.model.Pages._
+import engage.web.client.reusability._
 import japgolly.scalajs.react.React
 import japgolly.scalajs.react.Reusability
 import japgolly.scalajs.react.ScalaComponent
@@ -13,8 +15,6 @@ import lucuma.core.enums.Site
 import react.common._
 import react.common.implicits._
 import react.semanticui.elements.divider.Divider
-import engage.web.client.model.Pages._
-import engage.web.client.reusability._
 
 final case class AppTitle(site: Site) extends ReactProps[AppTitle](AppTitle.component)
 

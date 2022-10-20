@@ -5,6 +5,7 @@ package engage.web.server
 
 import cats.effect.Sync
 import cats.syntax.all._
+import engage.model.config._
 import lucuma.core.enums.Site
 import pureconfig._
 import pureconfig.error._
@@ -12,7 +13,6 @@ import pureconfig.generic.ProductHint
 import pureconfig.generic.auto._
 import pureconfig.module.catseffect.syntax._
 import pureconfig.module.http4s._
-import engage.model.config._
 
 package config {
   final case class SiteValueUnknown(site: String)         extends FailureReason {

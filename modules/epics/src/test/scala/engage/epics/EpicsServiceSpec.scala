@@ -5,13 +5,15 @@ package engage.epics
 
 import cats.effect.IO
 import cats.effect.kernel.Resource
-import munit.CatsEffectSuite
-import TestEnumerated._
 import cats.effect.std.Dispatcher
+import munit.CatsEffectSuite
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.TimeoutException
-import scala.concurrent.duration.{ FiniteDuration, SECONDS }
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.SECONDS
+
+import TestEnumerated._
 
 class EpicsServiceSpec extends CatsEffectSuite {
 

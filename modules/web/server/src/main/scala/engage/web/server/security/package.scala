@@ -7,20 +7,21 @@ import cats._
 import cats.effect._
 import cats.syntax.all._
 import com.unboundid.ldap.sdk.LDAPURL
-import org.typelevel.log4cats.Logger
+import engage.model.config._
+import engage.model.security.UserDetails
 import io.circe._
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.jawn.decode
 import io.circe.syntax._
+import org.typelevel.log4cats.Logger
 import pdi.jwt.Jwt
 import pdi.jwt.JwtAlgorithm
 import pdi.jwt.JwtCirce
 import pdi.jwt.JwtClaim
-import engage.model.security.UserDetails
-import engage.model.config._
-import security.AuthenticationService.AuthResult
 
 import java.time
+
+import security.AuthenticationService.AuthResult
 
 package security {
   sealed trait AuthenticationFailure            extends Product with Serializable

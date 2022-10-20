@@ -1,5 +1,5 @@
 import sbt._
-import java.lang.{ Runtime => JRuntime }
+import java.lang.{Runtime => JRuntime}
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 /**
@@ -94,7 +94,7 @@ object Settings {
 
     val clue = "0.23.1"
 
-    val sttp = "3.8.2"
+    val sttp = "3.8.3"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"

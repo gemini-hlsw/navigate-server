@@ -3,16 +3,20 @@
 
 package engage.web.server.common
 
-import scala.concurrent.duration._
 import cats.data.NonEmptyList
 import cats.data.OptionT
 import cats.effect.Sync
 import cats.instances.string._
 import cats.syntax.eq._
 import org.http4s.CacheDirective._
-import org.http4s.{ HttpRoutes, Request, Response, StaticFile }
+import org.http4s.HttpRoutes
+import org.http4s.Request
+import org.http4s.Response
+import org.http4s.StaticFile
 import org.http4s.headers.`Cache-Control`
 import org.http4s.server.middleware.GZip
+
+import scala.concurrent.duration._
 
 class StaticRoutes[F[_]: Sync](
   devMode:       Boolean,

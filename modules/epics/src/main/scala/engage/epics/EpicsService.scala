@@ -3,17 +3,16 @@
 
 package engage.epics
 
-import cats.effect.{ Async, Resource }
+import cats.effect.Async
+import cats.effect.Resource
 import cats.syntax.option._
 import org.epics.ca.Context
-import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.{
-  EPICS_CA_ADDR_LIST,
-  EPICS_CA_AUTO_ADDR_LIST,
-  EPICS_CA_CONN_TMO,
-  EPICS_CA_MAX_ARRAY_BYTES,
-  EPICS_CA_REPEATER_PORT,
-  EPICS_CA_SERVER_PORT
-}
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_ADDR_LIST
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_AUTO_ADDR_LIST
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_CONN_TMO
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_MAX_ARRAY_BYTES
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_REPEATER_PORT
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_SERVER_PORT
 
 import java.net.InetAddress
 import java.util.Properties

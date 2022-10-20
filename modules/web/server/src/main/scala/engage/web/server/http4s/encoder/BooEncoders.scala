@@ -5,7 +5,8 @@ package engage.web.server.http4s.encoder
 
 import cats.effect.Concurrent
 import engage.model.boopickle.ModelBooPicklers
-import engage.model.security.{ UserDetails, UserLoginRequest }
+import engage.model.security.UserDetails
+import engage.model.security.UserLoginRequest
 import org.http4s.EntityDecoder
 import org.http4s.EntityEncoder
 import org.http4s.booPickle.instances.BooPickleInstances

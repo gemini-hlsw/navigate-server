@@ -4,13 +4,13 @@
 package engage.web.client
 
 import engage.model.enums.ServerLogLevel
+import engage.model.security.UserDetails
 import japgolly.scalajs.react.ReactCats._
 import japgolly.scalajs.react.Reusability
 import lucuma.core.util.Enumerated
 import react.common._
 import react.semanticui.SemanticColor
 import react.semanticui.SemanticSize
-import engage.model.security.UserDetails
 import shapeless.tag.@@
 import squants.Time
 

@@ -3,16 +3,16 @@
 
 package engage.web.client
 
-import scala.scalajs.js.annotation.JSExport
-import scala.scalajs.js.annotation.JSExportTopLevel
-
 import cats.effect.Sync
 import cats.effect._
-import lucuma.core.enums.Site
-import org.scalajs.dom.document
-import org.scalajs.dom.Element
 import engage.web.client.components.EngageUI
-import typings.loglevel.mod.{ ^ => logger }
+import lucuma.core.enums.Site
+import org.scalajs.dom.Element
+import org.scalajs.dom.document
+import typings.loglevel.mod.{^ => logger}
+
+import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.annotation.JSExportTopLevel
 
 /**
  * Engage WebApp entry point

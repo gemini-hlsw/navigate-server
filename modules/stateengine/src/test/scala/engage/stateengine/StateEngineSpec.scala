@@ -7,10 +7,11 @@ import cats.effect.IO
 import cats.effect.std.Semaphore
 import cats.syntax.all._
 import munit.CatsEffectSuite
-import Handler._
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
+
+import Handler._
 
 class StateEngineSpec extends CatsEffectSuite {
 

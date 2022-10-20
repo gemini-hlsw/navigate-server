@@ -8,8 +8,9 @@ import cats.effect._
 import cats.free.Free
 import cats.syntax.all._
 import com.unboundid.ldap.sdk._
-import org.typelevel.log4cats.Logger
 import engage.model.security.UserDetails
+import org.typelevel.log4cats.Logger
+
 import AuthenticationService.AuthResult
 
 /**

@@ -3,17 +3,28 @@
 
 package engage.web.server.http4s
 
-import java.util.UUID
-import scala.concurrent.duration._
-import scala.math._
 import cats.data.NonEmptyList
 import cats.effect.Async
 import cats.effect.Sync
 import cats.syntax.all._
+import engage.model.ClientId
+import engage.model.EngageEvent.ConnectionOpenEvent
+import engage.model.EngageEvent.ForClient
+import engage.model.EngageEvent.NullEvent
+import engage.model._
+import engage.model.boopickle._
+import engage.model.config._
+import engage.model.security.UserLoginRequest
+import engage.server.EngageEngine
+import engage.web.server.OcsBuildInfo
+import engage.web.server.http4s.encoder._
+import engage.web.server.security.AuthenticationService
+import engage.web.server.security.AuthenticationService.AuthResult
+import engage.web.server.security.Http4sAuthentication
+import engage.web.server.security.TokenRefresher
 import fs2.Pipe
 import fs2.Stream
 import fs2.concurrent.Topic
-import org.typelevel.log4cats.Logger
 import lucuma.core.enums.Site
 import org.http4s._
 import org.http4s.dsl._
@@ -26,20 +37,12 @@ import org.http4s.websocket.WebSocketFrame.Binary
 import org.http4s.websocket.WebSocketFrame.Close
 import org.http4s.websocket.WebSocketFrame.Ping
 import org.http4s.websocket.WebSocketFrame.Pong
+import org.typelevel.log4cats.Logger
 import scodec.bits.ByteVector
-import engage.model.ClientId
-import engage.model.EngageEvent.{ ConnectionOpenEvent, ForClient, NullEvent }
-import engage.model._
-import engage.model.boopickle._
-import engage.model.config._
-import engage.model.security.UserLoginRequest
-import engage.server.EngageEngine
-import engage.web.server.OcsBuildInfo
-import engage.web.server.http4s.encoder._
-import engage.web.server.security.AuthenticationService
-import engage.web.server.security.AuthenticationService.AuthResult
-import engage.web.server.security.Http4sAuthentication
-import engage.web.server.security.TokenRefresher
+
+import java.util.UUID
+import scala.concurrent.duration._
+import scala.math._
 
 /**
  * Rest Endpoints under the /api route

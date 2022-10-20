@@ -4,18 +4,23 @@
 package engage.epics
 
 import cats.Eq
-import cats.effect.{ Async, Concurrent, Resource }
-import cats.effect.std.{ Dispatcher, Queue }
-import cats.implicits._
+import cats.effect.Async
+import cats.effect.Concurrent
+import cats.effect.Resource
 import cats.effect.implicits._
+import cats.effect.std.Dispatcher
+import cats.effect.std.Queue
+import cats.implicits._
 import engage.epics.Channel.StreamEvent
 import engage.epics.RemoteChannel.RemoteChannelImpl
 import fs2.Stream
 import mouse.all._
-import org.epics.ca.{ Channel => CaChannel, Severity, Status }
+import org.epics.ca.Severity
+import org.epics.ca.Status
+import org.epics.ca.{Channel => CaChannel}
 
+import java.lang.{Boolean => JBoolean}
 import scala.concurrent.duration.FiniteDuration
-import java.lang.{ Boolean => JBoolean }
 
 trait Channel[F[_], T] extends RemoteChannel[F] {
   val get: F[T]

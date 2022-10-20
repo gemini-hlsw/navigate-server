@@ -3,12 +3,12 @@
 
 package engage.web.server.security
 
-import scala.jdk.CollectionConverters._
-
 import com.unboundid.ldap.sdk.SearchRequest
 import com.unboundid.ldap.sdk.SearchScope
 import com.unboundid.ldap.sdk._
 import engage.model.security.UserDetails._
+
+import scala.jdk.CollectionConverters._
 
 object LdapConnectionOps {
   // Extension methods for ldap connection

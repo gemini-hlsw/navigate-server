@@ -3,14 +3,19 @@
 
 package engage.epics
 
+import cats.Applicative
+import cats.FlatMap
+import cats.Monad
+import cats.Parallel
+import cats.effect.Async
+import cats.effect.Concurrent
+import cats.effect.Resource
 import cats.effect.std.Dispatcher
-import cats.effect.{ Async, Concurrent, Resource }
 import cats.syntax.all._
-import cats.{ Applicative, FlatMap, Monad, Parallel }
-import mouse.boolean._
-import fs2.Stream
 import engage.epics.Channel.StreamEvent
 import engage.epics.EpicsSystem.TelltaleChannel
+import fs2.Stream
+import mouse.boolean._
 
 import scala.concurrent.duration.FiniteDuration
 

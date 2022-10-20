@@ -4,15 +4,12 @@ import Common._
 import Settings.Libraries._
 import Settings.LibraryVersions
 import AppsCommon._
-import sbt.Keys._
 import NativePackagerHelper._
-import sbtcrossproject.CrossType
 import com.typesafe.sbt.packager.docker._
 
 //lazy val attoVersion                 = "0.8.0"
 //lazy val catsVersion                 = "2.1.1"
 //lazy val collCompatVersion           = "2.1.6"
-lazy val kindProjectorVersion = "0.13.2"
 //lazy val monocleVersion              = "2.0.5"
 //lazy val catsTestkitScalaTestVersion = "1.0.1"
 //lazy val scalaJavaTimeVersion        = "2.0.0"
@@ -24,23 +21,6 @@ name := "engage"
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 Global / semanticdbEnabled := true
-
-ThisBuild / Compile / packageDoc / publishArtifact := false
-ThisBuild / Test / bspEnabled                      := false
-
-inThisBuild(
-  Seq(
-    homepage                                                 := Some(url("https://github.com/gemini-hlsw/engage")),
-    addCompilerPlugin(
-      ("org.typelevel"                                       %% "kind-projector" % kindProjectorVersion).cross(CrossVersion.full)
-    ),
-    scalacOptions += "-Ymacro-annotations",
-    Global / onChangedBuildSource                            := ReloadOnSourceChanges,
-    scalafixDependencies ++= List(ClueGenerator, LucumaSchemas),
-    scalafixScalaBinaryVersion                               := "2.13",
-    ScalafixConfig / bspEnabled.withRank(KeyRanks.Invisible) := false
-  ) ++ lucumaPublishSettings
-)
 
 // Gemini repository
 ThisBuild / resolvers ++= Seq(
@@ -78,16 +58,17 @@ ThisBuild / updateOptions := updateOptions.value.withLatestSnapshots(false)
 
 ThisBuild / evictionErrorLevel := Level.Info
 
-Global / cancelable := true
-
-// Should make CI builds more robust
-Global / concurrentRestrictions += Tags.limit(ScalaJSTags.Link, 2)
-
-publish / skip := true
-
 //////////////
 // Projects
 //////////////
+
+lazy val root = tlCrossRootProject.aggregate(epics,
+                                             stateengine,
+                                             engage_web_server,
+                                             engage_web_client,
+                                             engage_model,
+                                             app_engage_server
+)
 
 lazy val epics = project
   .in(file("modules/epics"))
@@ -124,7 +105,6 @@ lazy val engage_web_server = project
   .settings(commonSettings: _*)
   .settings(
     name                 := "engage_web_server",
-    addCompilerPlugin(Plugins.kindProjectorPlugin),
     libraryDependencies ++= Seq(UnboundId,
                                 JwtCore,
                                 JwtCirce,
@@ -173,8 +153,6 @@ lazy val engage_web_client = project
     fullOptJS / webpackBundlingMode := BundlingMode.Application,
     webpackResources                := (baseDirectory.value / "src" / "webpack") * "*.js",
     webpackDevServerPort            := 9090,
-    webpack / version               := "4.44.1",
-    startWebpackDevServer / version := "3.11.0",
     // Use a different Webpack configuration file for production and create a single bundle without source maps
     fullOptJS / webpackConfigFile   := Some(
       baseDirectory.value / "src" / "webpack" / "prod.webpack.config.js"
@@ -326,20 +304,18 @@ lazy val app_engage_server = preventPublication(project.in(file("app/engage-serv
  */
 lazy val engageCommonSettings = Seq(
   // Main class for launching
-  Compile / mainClass             := Some("engage.web.server.http4s.WebServerLauncher"),
+  Compile / mainClass           := Some("engage.web.server.http4s.WebServerLauncher"),
   // This is important to keep the file generation order correctly
-  Universal / parallelExecution   := false,
+  Universal / parallelExecution := false,
   // Depend on webpack and add the assets created by webpack
   Compile / packageBin / mappings ++= (engage_web_client / Compile / fullOptJS / webpack).value
     .map(f => f.data -> f.data.getName()),
   // Name of the launch script
-  executableScriptName            := "engage-server",
-  // No javadocs
-  Compile / packageDoc / mappings := Seq(),
+  executableScriptName          := "engage-server",
   // Don't create launchers for Windows
-  makeBatScripts                  := Seq.empty,
+  makeBatScripts                := Seq.empty,
   // Specify a different name for the config file
-  bashScriptConfigLocation        := Some("${app_home}/../conf/launcher.args"),
+  bashScriptConfigLocation      := Some("${app_home}/../conf/launcher.args"),
   bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml"""",
   // Copy logback.xml to let users customize it on site
   Universal / mappings += {

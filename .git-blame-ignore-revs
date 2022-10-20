@@ -3,3 +3,6 @@
 
 # Scala Steward: Reformat with scalafmt 3.6.0
 b400c28f4c385ba43a4945bb59777db5dfc6ebd0
+
+# adopt sbt-lucuma
+19a2b3cec0145e95652506ee3e5b36e1b72d0d27
