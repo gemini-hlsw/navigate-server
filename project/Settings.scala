@@ -29,7 +29,7 @@ object Settings {
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
-    val catsTime     = "0.5.0"
+    val catsTime     = "0.5.1"
 
     // Logging
     val log4Cats         = "2.5.0"
