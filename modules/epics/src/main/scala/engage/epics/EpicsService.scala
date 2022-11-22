@@ -3,17 +3,16 @@
 
 package engage.epics
 
-import cats.effect.{ Async, Resource }
+import cats.effect.Async
+import cats.effect.Resource
 import cats.syntax.option._
 import org.epics.ca.Context
-import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.{
-  EPICS_CA_ADDR_LIST,
-  EPICS_CA_AUTO_ADDR_LIST,
-  EPICS_CA_CONN_TMO,
-  EPICS_CA_MAX_ARRAY_BYTES,
-  EPICS_CA_REPEATER_PORT,
-  EPICS_CA_SERVER_PORT
-}
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_ADDR_LIST
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_AUTO_ADDR_LIST
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_CONN_TMO
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_MAX_ARRAY_BYTES
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_REPEATER_PORT
+import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_SERVER_PORT
 
 import java.net.InetAddress
 import java.util.Properties
@@ -36,7 +35,7 @@ object EpicsService {
       .map(x => Channel.build[F, T, tjt.javaType](x)(Async[F], tjt.convert))
   }
 
-  final case class Builder private (
+  final case class Builder(
     addrList:          Option[List[InetAddress]],
     autoAddrList:      Option[Boolean],
     connectionTimeout: Option[FiniteDuration],
@@ -44,13 +43,13 @@ object EpicsService {
     serverPort:        Option[Int],
     maxArrayBytes:     Option[Int]
   ) {
-    def withAddressList(l: List[InetAddress]): Builder          = this.copy(addrList = l.some)
-    def withAutoAddrList(enabled: Boolean): Builder             = this.copy(autoAddrList = enabled.some)
+    def withAddressList(l:        List[InetAddress]): Builder = this.copy(addrList = l.some)
+    def withAutoAddrList(enabled: Boolean): Builder           = this.copy(autoAddrList = enabled.some)
     def withConnectionTimeout(timeout: FiniteDuration): Builder =
       this.copy(connectionTimeout = timeout.some)
-    def withRepeaterPort(port: Int): Builder                    = this.copy(repeaterPort = port.some)
-    def withServerPort(port: Int): Builder                      = this.copy(serverPort = port.some)
-    def withMaxArrayBytes(limit: Int): Builder                  = this.copy(maxArrayBytes = limit.some)
+    def withRepeaterPort(port:   Int): Builder = this.copy(repeaterPort = port.some)
+    def withServerPort(port:     Int): Builder = this.copy(serverPort = port.some)
+    def withMaxArrayBytes(limit: Int): Builder = this.copy(maxArrayBytes = limit.some)
 
     def build[F[_]: Async]: Resource[F, EpicsService[F]] = Resource
       .eval {

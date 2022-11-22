@@ -3,7 +3,7 @@
 
 package engage.server
 
-import cats.ApplicativeError
+import cats.ApplicativeThrow
 import cats.effect.{ Async, Concurrent, Ref, Temporal }
 import cats.effect.kernel.Sync
 import cats.syntax.all._
@@ -182,7 +182,7 @@ object EngageEngine {
     ecsVentGateMoveInProgress = false
   )
 
-  private def command[F[_]: ApplicativeError[*[_], Throwable]](
+  private def command[F[_]: ApplicativeThrow](
     engine:  StateEngine[F, State, EngageEvent],
     cmdType: EngageCommand,
     cmd:     F[ApplyCommandResult],

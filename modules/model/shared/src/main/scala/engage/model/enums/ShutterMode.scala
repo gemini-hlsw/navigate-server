@@ -6,11 +6,11 @@ package engage.model.enums
 import cats.Eq
 import lucuma.core.util.Enumerated
 
-trait ShutterMode extends Product with Serializable
+abstract class ShutterMode(val tag: String) extends Product with Serializable
 
 object ShutterMode {
-  case object FullyOpen extends ShutterMode
-  case object Tracking  extends ShutterMode
+  case object FullyOpen extends ShutterMode("fullyOpen")
+  case object Tracking  extends ShutterMode("tracking")
 
   implicit val shutterModeEq: Eq[ShutterMode] = Eq.instance {
     case (FullyOpen, FullyOpen) => true
@@ -18,5 +18,6 @@ object ShutterMode {
     case _                      => false
   }
 
-  implicit val shutterModeEnum: Enumerated[ShutterMode] = Enumerated.of(FullyOpen, Tracking)
+  implicit val shutterModeEnum: Enumerated[ShutterMode] =
+    Enumerated.from(FullyOpen, Tracking).withTag(_.tag)
 }

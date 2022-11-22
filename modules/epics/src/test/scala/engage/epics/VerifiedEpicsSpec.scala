@@ -55,7 +55,7 @@ class VerifiedEpicsSpec extends CatsEffectSuite {
     (for {
       tt  <- service.getChannel[Int]("test:stringVal").map(c => TelltaleChannel("foo", c))
       ch1 <- service.getChannel[Int]("test:heartbeat")
-      dsp <- Dispatcher[IO]
+      dsp <- Dispatcher.sequential[IO]
     } yield (tt, ch1, dsp))
       .use { case (tt, ch1, dsp) =>
         implicit val d: Dispatcher[IO] = dsp

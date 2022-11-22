@@ -5,7 +5,8 @@ package engage.web.server.http4s.encoder
 
 import cats.effect.Concurrent
 import engage.model.boopickle.ModelBooPicklers
-import engage.model.security.{ UserDetails, UserLoginRequest }
+import engage.model.security.UserDetails
+import engage.model.security.UserLoginRequest
 import org.http4s.EntityDecoder
 import org.http4s.EntityEncoder
 import org.http4s.booPickle.instances.BooPickleInstances
@@ -19,7 +20,7 @@ trait BooEncoders extends ModelBooPicklers with BooPickleInstances {
   implicit def usrLoginDecoder[F[_]: Concurrent]: EntityDecoder[F, UserLoginRequest] =
     booOf[F, UserLoginRequest]
   implicit def userDetailEncoder[F[_]]: EntityEncoder[F, UserDetails]                =
-    booEncoderOf[UserDetails]
+    booEncoderOf[F, UserDetails]
 }
 
 /**
@@ -27,5 +28,5 @@ trait BooEncoders extends ModelBooPicklers with BooPickleInstances {
  */
 trait ClientBooEncoders extends ModelBooPicklers with BooPickleInstances {
   implicit def usrLoginEncoder[F[_]]: EntityEncoder[F, UserLoginRequest] =
-    booEncoderOf[UserLoginRequest]
+    booEncoderOf[F, UserLoginRequest]
 }

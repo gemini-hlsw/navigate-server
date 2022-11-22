@@ -6,13 +6,13 @@ package engage.server.epicsdata
 import cats.Eq
 import lucuma.core.util.Enumerated
 
-trait BinaryOnOff extends Product with Serializable
+abstract class BinaryOnOff(val tag: String) extends Product with Serializable
 
 object BinaryOnOff {
-  case object Off extends BinaryOnOff
-  case object On  extends BinaryOnOff
+  case object Off extends BinaryOnOff("off")
+  case object On  extends BinaryOnOff("on")
 
-  implicit val onoffEnum: Enumerated[BinaryOnOff] = Enumerated.of(Off, On)
+  implicit val onoffEnum: Enumerated[BinaryOnOff] = Enumerated.from(Off, On).withTag(_.tag)
 
   implicit val onoffEq: Eq[BinaryOnOff] = Eq.instance {
     case (Off, Off) => true

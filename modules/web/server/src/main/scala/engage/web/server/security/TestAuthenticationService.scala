@@ -6,6 +6,7 @@ package engage.web.server.security
 import cats.Applicative
 import cats.syntax.all._
 import engage.model.security.UserDetails
+
 import AuthenticationService.AuthResult
 
 /**

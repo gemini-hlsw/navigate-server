@@ -8,7 +8,7 @@ import cats.effect.std.Dispatcher
 import cats.effect.{ Resource, Temporal }
 import mouse.all._
 import engage.epics.EpicsSystem.TelltaleChannel
-import engage.epics.{ Channel, EpicsService }
+import engage.epics._
 import engage.epics.VerifiedEpics._
 import engage.model.enums.{ DomeMode, ShutterMode }
 import engage.server.{ ApplyCommandResult, tcs }
@@ -28,7 +28,7 @@ trait TcsEpicsSystem[F[_]] {
 
 object TcsEpicsSystem {
 
-  trait TcsEpics[F[_]] extends {
+  trait TcsEpics[F[_]] {
 
     def post(timeout: FiniteDuration): VerifiedEpics[F, F, ApplyCommandResult]
 

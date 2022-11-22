@@ -4,6 +4,8 @@
 package engage.web.client.components
 
 import cats.syntax.all._
+import engage.web.client.model.Pages._
+import engage.web.client.reusability._
 import japgolly.scalajs.react.React
 import japgolly.scalajs.react.Reusability
 import japgolly.scalajs.react.ScalaComponent
@@ -13,10 +15,10 @@ import lucuma.core.enums.Site
 import react.common._
 import react.common.implicits._
 import react.semanticui.elements.divider.Divider
-import engage.web.client.model.Pages._
-import engage.web.client.reusability._
 
-final case class AppTitle(site: Site) extends ReactProps[AppTitle](AppTitle.component)
+import scala.language.implicitConversions
+
+final case class AppTitle(site: Site) extends ReactProps[AppTitle, Unit, Unit](AppTitle.component)
 
 object AppTitle {
   type Props = AppTitle
@@ -40,7 +42,7 @@ object AppTitle {
 }
 
 final case class EngageMain(site: Site, ctl: RouterCtl[EngagePages])
-    extends ReactProps[EngageMain](EngageMain.component)
+    extends ReactProps[EngageMain, Unit, Unit](EngageMain.component)
 
 object EngageMain {
   type Props = EngageMain

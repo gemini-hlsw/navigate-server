@@ -3,11 +3,12 @@
 
 package engage.epics
 import cats.effect.Async
-import cats.implicits._
 import cats.effect.implicits._
+import cats.implicits._
 import cats.kernel.Eq
-import org.epics.ca.{ Channel => CaChannel }
-import org.epics.ca.{ AccessRights, ConnectionState }
+import org.epics.ca.AccessRights
+import org.epics.ca.ConnectionState
+import org.epics.ca.{Channel => CaChannel}
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -23,16 +24,16 @@ trait RemoteChannel[F[_]] {
 object RemoteChannel {
 
   abstract class RemoteChannelImpl[F[_]: Async] extends RemoteChannel[F] {
-    val caChannel: CaChannel[_]
+    val caChannel: CaChannel[?]
 
-    override def connect: F[Unit]                          =
+    override def connect: F[Unit] =
       Async[F].fromCompletableFuture(Async[F].delay(caChannel.connectAsync())).void
     override def connect(timeout: FiniteDuration): F[Unit] = connect.timeout(timeout)
-    override def disconnect: F[Unit]                       = Async[F].delay(caChannel.close())
-    override def getName: F[String]                        = Async[F].delay(caChannel.getName)
-    override def getConnectionState: F[ConnectionState]    =
+    override def disconnect: F[Unit]                    = Async[F].delay(caChannel.close())
+    override def getName: F[String]                     = Async[F].delay(caChannel.getName)
+    override def getConnectionState: F[ConnectionState] =
       Async[F].delay(caChannel.getConnectionState)
-    override def getAccessRights: F[AccessRights]          = Async[F].delay(caChannel.getAccessRights)
+    override def getAccessRights: F[AccessRights]       = Async[F].delay(caChannel.getAccessRights)
   }
 
   implicit def remoteChannelEq[F[_]]: Eq[RemoteChannel[F]] = Eq.instance {

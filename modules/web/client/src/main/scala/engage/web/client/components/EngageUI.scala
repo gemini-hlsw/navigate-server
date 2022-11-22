@@ -5,10 +5,12 @@ package engage.web.client.components
 
 import cats.effect.Sync
 import cats.syntax.all._
-import engage.web.client.model.Pages.{ EngagePages, Root }
+import engage.web.client.model.Pages.EngagePages
+import engage.web.client.model.Pages.Root
 import japgolly.scalajs.react.extra.router._
 import japgolly.scalajs.react.vdom.html_<^._
 import lucuma.core.enums.Site
+import react.common._
 
 /**
  * UI Router

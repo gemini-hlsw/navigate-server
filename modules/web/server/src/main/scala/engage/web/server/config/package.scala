@@ -5,14 +5,13 @@ package engage.web.server
 
 import cats.effect.Sync
 import cats.syntax.all._
+import engage.model.config._
 import lucuma.core.enums.Site
 import pureconfig._
 import pureconfig.error._
-import pureconfig.generic.ProductHint
-import pureconfig.generic.auto._
+import pureconfig.generic.derivation.default._
 import pureconfig.module.catseffect.syntax._
 import pureconfig.module.http4s._
-import engage.model.config._
 
 package config {
   final case class SiteValueUnknown(site: String)         extends FailureReason {
@@ -54,18 +53,9 @@ package object config {
       }
     }
 
-  implicit val tlsInfoHint: ProductHint[TLSConfig]                             =
-    ProductHint[TLSConfig](ConfigFieldMapping(KebabCase, KebabCase))
-  implicit val webServerConfigurationHint: ProductHint[WebServerConfiguration] =
-    ProductHint[WebServerConfiguration](ConfigFieldMapping(KebabCase, KebabCase))
-  implicit val authenticationConfigHint: ProductHint[AuthenticationConfig]     =
-    ProductHint[AuthenticationConfig](ConfigFieldMapping(KebabCase, KebabCase))
-  implicit val engageServerHint: ProductHint[EngageEngineConfiguration]        =
-    ProductHint[EngageEngineConfiguration](ConfigFieldMapping(KebabCase, KebabCase))
-  implicit val systemsControlHint: ProductHint[SystemsControlConfiguration]    =
-    ProductHint[SystemsControlConfiguration](ConfigFieldMapping(KebabCase, KebabCase))
-
-  def loadConfiguration[F[_]: Sync](config: ConfigObjectSource): F[EngageConfiguration] =
+  def loadConfiguration[F[_]: Sync](config: ConfigObjectSource): F[EngageConfiguration] = {
+    implicit val reader: ConfigReader[EngageConfiguration] =
+      ConfigReader.derived[EngageConfiguration]
     config.loadF[F, EngageConfiguration]()
-
+  }
 }

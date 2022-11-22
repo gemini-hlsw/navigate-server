@@ -8,8 +8,9 @@ import cats.effect._
 import cats.free.Free
 import cats.syntax.all._
 import com.unboundid.ldap.sdk._
-import org.typelevel.log4cats.Logger
 import engage.model.security.UserDetails
+import org.typelevel.log4cats.Logger
+
 import AuthenticationService.AuthResult
 
 /**
@@ -35,8 +36,8 @@ object FreeLDAPAuthenticationService {
   type LdapM[A] = Free[LdapOp, A]
 
   // Smart constructors for LdapOp[A]
-  def bind(u: String, p: String): LdapM[UID]                                   = Free.liftF(LdapOp.AuthenticateOp(u, p))
-  def displayName(u: UID): LdapM[DisplayName]                                  = Free.liftF(LdapOp.UserDisplayNameOp(u))
+  def bind(u:        String, p: String): LdapM[UID] = Free.liftF(LdapOp.AuthenticateOp(u, p))
+  def displayName(u: UID): LdapM[DisplayName] = Free.liftF(LdapOp.UserDisplayNameOp(u))
   def nameGroupsThumb(u: UID): LdapM[(DisplayName, Groups, Option[Thumbnail])] =
     Free.liftF(LdapOp.DisplayNameGrpThumbOp(u))
 

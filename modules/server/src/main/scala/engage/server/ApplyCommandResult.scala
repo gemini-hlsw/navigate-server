@@ -5,13 +5,13 @@ package engage.server
 
 import lucuma.core.util.Enumerated
 
-sealed trait ApplyCommandResult extends Product with Serializable
+sealed abstract class ApplyCommandResult(val tag: String) extends Product with Serializable
 
 object ApplyCommandResult {
-  case object Paused    extends ApplyCommandResult
-  case object Completed extends ApplyCommandResult
+  case object Paused    extends ApplyCommandResult("paused")
+  case object Completed extends ApplyCommandResult("completed")
 
   /** @group Typeclass Instances */
   implicit val ApplyCommandResultEnumerated: Enumerated[ApplyCommandResult] =
-    Enumerated.of(Paused, Completed)
+    Enumerated.from(Paused, Completed).withTag(_.tag)
 }

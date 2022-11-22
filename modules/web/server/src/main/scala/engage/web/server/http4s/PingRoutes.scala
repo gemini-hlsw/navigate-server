@@ -5,9 +5,11 @@ package engage.web.server.http4s
 
 import cats.effect.Sync
 import cats.syntax.all._
-import engage.web.server.security.{ AuthenticationService, Http4sAuthentication }
+import engage.web.server.security.AuthenticationService
+import engage.web.server.security.Http4sAuthentication
 import org.http4s._
 import org.http4s.dsl._
+
 import AuthenticationService.AuthResult
 
 /**

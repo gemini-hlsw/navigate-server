@@ -4,14 +4,17 @@
 package engage.epics
 
 import cats.Applicative
+import cats.effect.Concurrent
+import cats.effect.Ref
+import cats.effect.Resource
 import cats.effect.std.Dispatcher
-import cats.effect.{ Concurrent, Ref, Resource }
 import cats.syntax.all._
 import engage.epics.TestChannel.State
 import fs2.Stream
 import monocle.Lens
 import mouse.all._
-import org.epics.ca.{ AccessRights, ConnectionState }
+import org.epics.ca.AccessRights
+import org.epics.ca.ConnectionState
 
 import scala.concurrent.duration.FiniteDuration
 
@@ -57,7 +60,7 @@ object TestChannel {
 
   object State {
     def of[A](v: A): State[A] = State(connected = false, v.some)
-    def default[A]: State[A]  = State(connected = false, none)
+    def default[A]: State[A] = State(connected = false, none)
   }
 
 }

@@ -5,13 +5,15 @@ package engage.epics
 
 import cats.effect.IO
 import cats.effect.kernel.Resource
-import munit.CatsEffectSuite
-import TestEnumerated._
 import cats.effect.std.Dispatcher
+import munit.CatsEffectSuite
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.TimeoutException
-import scala.concurrent.duration.{ FiniteDuration, SECONDS }
+import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.SECONDS
+
+import TestEnumerated._
 
 class EpicsServiceSpec extends CatsEffectSuite {
 
@@ -108,7 +110,7 @@ class EpicsServiceSpec extends CatsEffectSuite {
     assertIO(
       (
         for {
-          dsp <- Dispatcher[IO]
+          dsp <- Dispatcher.sequential[IO]
           ch  <- srv.getChannel[Int]("test:heartbeat")
           _   <- Resource.eval(ch.connect)
           s   <- ch.valueStream(dsp)
@@ -227,7 +229,7 @@ class EpicsServiceSpec extends CatsEffectSuite {
   epicsServer.test("Error trying to get stream from unconnected channel") { srv =>
     interceptIO[IllegalStateException](
       (for {
-        dsp <- Dispatcher[IO]
+        dsp <- Dispatcher.sequential[IO]
         ch  <- srv.getChannel[Int]("test:intVal")
         v   <- ch.valueStream(dsp)
       } yield v).use_

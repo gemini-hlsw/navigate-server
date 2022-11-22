@@ -4,7 +4,7 @@
 package engage.server.acm
 
 import cats.effect.Resource
-import engage.epics.{ Channel, EpicsService }
+import engage.epics._
 
 case class CarRecord[F[_]](
   name: String,

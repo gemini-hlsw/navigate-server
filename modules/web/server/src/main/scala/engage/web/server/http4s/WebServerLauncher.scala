@@ -4,40 +4,48 @@
 package engage.web.server.http4s
 
 import cats.Parallel
-
-import java.nio.file.{ Path => FilePath }
-import cats.effect.std.Dispatcher
 import cats.effect._
-
-import scala.concurrent.duration._
+import cats.effect.std.Dispatcher
 import cats.syntax.all._
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.Appender
 import engage.model.EngageEvent
-import engage.web.server.common.{ LogInitialization, RedirectToHttpsRoutes, StaticRoutes }
+import engage.model.config._
+import engage.server.CaServiceInit
+import engage.server.EngageEngine
+import engage.server.EngageFailure
+import engage.server.Systems
+import engage.web.server.OcsBuildInfo
+import engage.web.server.common.LogInitialization
+import engage.web.server.common.RedirectToHttpsRoutes
+import engage.web.server.common.StaticRoutes
+import engage.web.server.config._
+import engage.web.server.logging._
+import engage.web.server.security.AuthenticationService
 import fs2.Stream
 import fs2.concurrent.Topic
 import org.http4s.HttpRoutes
-import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.client.Client
-import org.http4s.server.{ Router, Server }
+import org.http4s.ember.client.EmberClientBuilder
+import org.http4s.server.Router
 import org.http4s.server.SSLKeyStoreSupport.StoreInfo
-import org.http4s.server.middleware.{ Logger => Http4sLogger }
+import org.http4s.server.Server
+import org.http4s.server.middleware.{Logger => Http4sLogger}
+import org.http4s.server.websocket.WebSocketBuilder2
 import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-import pureconfig.{ ConfigObjectSource, ConfigSource }
-import engage.model.config._
-import engage.server.{ CaServiceInit, EngageEngine, EngageFailure, Systems }
-import engage.web.server.OcsBuildInfo
-import engage.web.server.logging._
-import engage.web.server.config._
-import engage.web.server.security.AuthenticationService
-import org.http4s.server.websocket.WebSocketBuilder
+import pureconfig.ConfigObjectSource
+import pureconfig.ConfigSource
 
 import java.io.FileInputStream
-import java.security.{ KeyStore, Security }
-import javax.net.ssl.{ KeyManagerFactory, SSLContext, TrustManagerFactory }
+import java.nio.file.{Path => FilePath}
+import java.security.KeyStore
+import java.security.Security
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
+import scala.concurrent.duration._
 
 object WebServerLauncher extends IOApp with LogInitialization {
   private implicit def L: Logger[IO] = Slf4jLogger.getLoggerFromName[IO]("engage")
@@ -105,7 +113,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
 
     val ssl: F[Option[SSLContext]] = conf.webServer.tls.map(makeContext[F]).sequence
 
-    def build(all: WebSocketBuilder[F] => HttpRoutes[F]): Resource[F, Server] = Resource.eval {
+    def build(all: WebSocketBuilder2[F] => HttpRoutes[F]): Resource[F, Server] = Resource.eval {
       val builder =
         BlazeServerBuilder[F]
           .bindHttp(conf.webServer.port, conf.webServer.host)
@@ -113,7 +121,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
       ssl.map(_.fold(builder)(builder.withSslContext)).map(_.resource)
     }.flatten
 
-    def router(wsBuilder: WebSocketBuilder[F]) = Router[F](
+    def router(wsBuilder: WebSocketBuilder2[F]) = Router[F](
       "/"                    -> new StaticRoutes(conf.mode === Mode.Development, OcsBuildInfo.builtAtMillis).service,
       "/api/engage/commands" -> new EngageCommandRoutes(as, se).service,
       "/api"                 -> new EngageUIApiRoutes(conf.site, conf.mode, as, clientsDb, outputs)
@@ -124,7 +132,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
       "/ping" -> new PingRoutes(as).service
     )
 
-    def loggedRoutes(wsBuilder: WebSocketBuilder[F]) =
+    def loggedRoutes(wsBuilder: WebSocketBuilder2[F]) =
       pingRouter <+> Http4sLogger.httpRoutes(logHeaders = false, logBody = false)(router(wsBuilder))
 
     build(loggedRoutes)
@@ -163,7 +171,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
     out:        Topic[IO, EngageEvent],
     dispatcher: Dispatcher[IO]
   ): IO[Appender[ILoggingEvent]] = IO.apply {
-    import ch.qos.logback.classic.{ AsyncAppender, Logger, LoggerContext }
+    import ch.qos.logback.classic.{AsyncAppender, Logger, LoggerContext}
     import org.slf4j.LoggerFactory
 
     val asyncAppender = new AsyncAppender
@@ -209,7 +217,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
       httpClient: Client[IO]
     ): Resource[IO, EngageEngine[IO]] =
       for {
-        dspt <- Dispatcher[IO]
+        dspt <- Dispatcher.sequential[IO]
         cas  <- CaServiceInit.caInit[IO](conf.engageEngine)
         sys  <-
           Systems
@@ -240,7 +248,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
         _      <- Resource.eval(printBanner(conf))
         cli    <- client(10.seconds)
         out    <- Resource.eval(Topic[IO, EngageEvent])
-        dsp    <- Dispatcher[IO]
+        dsp    <- Dispatcher.sequential[IO]
         _      <- Resource.eval(logToClients(out, dsp))
         cs     <- Resource.eval(
                     Ref.of[IO, ClientsSetDb.ClientsSet](Map.empty).map(ClientsSetDb.apply[IO](_))
@@ -267,9 +275,9 @@ object WebServerLauncher extends IOApp with LogInitialization {
 
   /** Reads the configuration and launches Engage */
   override def run(args: List[String]): IO[ExitCode] =
-    engage.guaranteeCase {
-      case ExitCode.Success => IO.unit
-      case e                => IO(Console.println(s"Exit code $e")) // scalastyle:off console.io
+    engage.guaranteeCase { oc =>
+      if (oc.isSuccess) IO.unit
+      else IO(Console.println(s"Exit code $oc")) // scalastyle:off console.io
     }
 
 }

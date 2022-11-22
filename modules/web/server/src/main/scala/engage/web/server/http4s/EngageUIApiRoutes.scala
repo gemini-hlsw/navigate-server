@@ -3,32 +3,14 @@
 
 package engage.web.server.http4s
 
-import java.util.UUID
-import scala.concurrent.duration._
-import scala.math._
 import cats.data.NonEmptyList
 import cats.effect.Async
 import cats.effect.Sync
 import cats.syntax.all._
-import fs2.Pipe
-import fs2.Stream
-import fs2.concurrent.Topic
-import org.typelevel.log4cats.Logger
-import lucuma.core.enums.Site
-import org.http4s._
-import org.http4s.dsl._
-import org.http4s.headers.`User-Agent`
-import org.http4s.headers.`WWW-Authenticate`
-import org.http4s.server.middleware.GZip
-import org.http4s.server.websocket.WebSocketBuilder
-import org.http4s.websocket.WebSocketFrame
-import org.http4s.websocket.WebSocketFrame.Binary
-import org.http4s.websocket.WebSocketFrame.Close
-import org.http4s.websocket.WebSocketFrame.Ping
-import org.http4s.websocket.WebSocketFrame.Pong
-import scodec.bits.ByteVector
 import engage.model.ClientId
-import engage.model.EngageEvent.{ ConnectionOpenEvent, ForClient, NullEvent }
+import engage.model.EngageEvent.ConnectionOpenEvent
+import engage.model.EngageEvent.ForClient
+import engage.model.EngageEvent.NullEvent
 import engage.model._
 import engage.model.boopickle._
 import engage.model.config._
@@ -40,6 +22,27 @@ import engage.web.server.security.AuthenticationService
 import engage.web.server.security.AuthenticationService.AuthResult
 import engage.web.server.security.Http4sAuthentication
 import engage.web.server.security.TokenRefresher
+import fs2.Pipe
+import fs2.Stream
+import fs2.concurrent.Topic
+import lucuma.core.enums.Site
+import org.http4s._
+import org.http4s.dsl._
+import org.http4s.headers.`User-Agent`
+import org.http4s.headers.`WWW-Authenticate`
+import org.http4s.server.middleware.GZip
+import org.http4s.server.websocket.WebSocketBuilder2
+import org.http4s.websocket.WebSocketFrame
+import org.http4s.websocket.WebSocketFrame.Binary
+import org.http4s.websocket.WebSocketFrame.Close
+import org.http4s.websocket.WebSocketFrame.Ping
+import org.http4s.websocket.WebSocketFrame.Pong
+import org.typelevel.log4cats.Logger
+import scodec.bits.ByteVector
+
+import java.util.UUID
+import scala.concurrent.duration._
+import scala.math._
 
 /**
  * Rest Endpoints under the /api route
@@ -104,7 +107,7 @@ class EngageUIApiRoutes[F[_]: Async](
     }
   }
 
-  def protectedServices(wsBuilder: WebSocketBuilder[F]): AuthedRoutes[AuthResult, F] =
+  def protectedServices(wsBuilder: WebSocketBuilder2[F]): AuthedRoutes[AuthResult, F] =
     AuthedRoutes.of {
       // Route used for testing only
       case GET -> Root / "log" / IntVar(count) as _ if mode === Mode.Development =>
@@ -170,7 +173,7 @@ class EngageUIApiRoutes[F[_]: Async](
 
     }
 
-  def service(wsBuilder: WebSocketBuilder[F]): HttpRoutes[F] =
+  def service(wsBuilder: WebSocketBuilder2[F]): HttpRoutes[F] =
     publicService <+> TokenRefresher(GZip(httpAuthentication.optAuth(protectedServices(wsBuilder))),
                                      httpAuthentication
     )

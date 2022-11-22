@@ -105,7 +105,7 @@ class TcsBaseControllerEpics[F[_]: Async: Parallel](
     target: Target
   ): TcsCommands[F] => TcsCommands[F] = target match {
     case t: TcsBaseController.AzElTarget      =>
-      { x: TcsCommands[F] => l.get(x).objectName(t.objectName) }
+      { (x: TcsCommands[F]) => l.get(x).objectName(t.objectName) }
         .compose[TcsCommands[F]](l.get(_).coordSystem("AzEl"))
         .compose[TcsCommands[F]](l.get(_).coord1(t.coordinates.azimuth.toAngle.toDoubleDegrees))
         .compose[TcsCommands[F]](l.get(_).coord2(t.coordinates.elevation.toAngle.toDoubleDegrees))
@@ -118,7 +118,7 @@ class TcsBaseControllerEpics[F[_]: Async: Parallel](
         .compose[TcsCommands[F]](l.get(_).properMotion2(0.0))
         .compose[TcsCommands[F]](l.get(_).ephemerisFile(""))
     case t: TcsBaseController.SiderealTarget  =>
-      { x: TcsCommands[F] => l.get(x).objectName(t.objectName) }
+      { (x: TcsCommands[F]) => l.get(x).objectName(t.objectName) }
         .compose[TcsCommands[F]](l.get(_).coordSystem("FK5/J2000"))
         .compose[TcsCommands[F]](l.get(_).coord1(t.coordinates.ra.toAngle.toDoubleDegrees))
         .compose[TcsCommands[F]](l.get(_).coord2(t.coordinates.dec.toAngle.toDoubleDegrees))
@@ -144,7 +144,7 @@ class TcsBaseControllerEpics[F[_]: Async: Parallel](
         )
         .compose[TcsCommands[F]](l.get(_).ephemerisFile(""))
     case t: TcsBaseController.EphemerisTarget =>
-      { x: TcsCommands[F] => l.get(x).objectName(t.objectName) }
+      { (x: TcsCommands[F]) => l.get(x).objectName(t.objectName) }
         .compose[TcsCommands[F]](l.get(_).coordSystem(""))
         .compose[TcsCommands[F]](l.get(_).coord1(0.0))
         .compose[TcsCommands[F]](l.get(_).coord2(0.0))

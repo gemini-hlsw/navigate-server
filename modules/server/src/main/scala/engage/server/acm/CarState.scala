@@ -6,15 +6,15 @@ package engage.server.acm
 import cats.Eq
 import lucuma.core.util.Enumerated
 
-sealed trait CarState extends Product with Serializable
+sealed abstract class CarState(val tag: String) extends Product with Serializable
 
 object CarState {
-  case object Idle   extends CarState
-  case object Paused extends CarState
-  case object Busy   extends CarState
-  case object Error  extends CarState
+  case object Idle   extends CarState("idle")
+  case object Paused extends CarState("paused")
+  case object Busy   extends CarState("busy")
+  case object Error  extends CarState("error")
 
   implicit val carStateEq: Eq[CarState] = Eq.fromUniversalEquals
 
-  implicit val carStateEnum: Enumerated[CarState] = Enumerated.of(Idle, Paused, Busy, Idle)
+  implicit val carStateEnum: Enumerated[CarState] = Enumerated.from(Idle, Paused, Busy, Idle).withTag(_.tag)
 }

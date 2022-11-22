@@ -1,5 +1,5 @@
 import sbt._
-import java.lang.{ Runtime => JRuntime }
+import java.lang.{Runtime => JRuntime}
 import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._
 
 /**
@@ -10,11 +10,11 @@ object Settings {
   /** Library versions */
   object LibraryVersions {
     // ScalaJS libraries
-    val scalaDom                = "2.2.0"
+    val scalaDom                = "2.3.0"
     val scalajsReact            = "2.1.1"
     val booPickle               = "1.4.0"
     val javaTimeJS              = "2.4.0"
-    val scalaJSReactCommon      = "0.14.7"
+    val lucumaReact             = "0.15.0"
     val scalaJSSemanticUI       = "0.13.1"
     val scalaJSReactVirtualized = "0.13.1"
     val scalaJSReactClipboard   = "1.5.1"
@@ -22,34 +22,38 @@ object Settings {
     val scalaJSReactSortable    = "0.5.2"
 
     // Scala libraries
-    val catsEffect   = "3.3.14"
-    val cats         = "2.8.0"
-    val mouse        = "1.1.0"
-    val fs2          = "3.2.11"
+    val catsEffect   = "3.4.1"
+    val cats         = "2.9.0"
+    val mouse        = "1.2.1"
+    val fs2          = "3.3.0"
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
     val catsTime     = "0.5.0"
 
     // Logging
-    val log4Cats         = "2.4.0"
+    val log4Cats         = "2.5.0"
     val log4CatsLogLevel = "0.3.1"
 
-    val http4s      = "1.0.0-M32"
-    val squants     = "1.8.3"
-    val commonsHttp = "2.0.2"
-    val unboundId   = "3.2.1"
-    val jwt         = "9.0.6"
-    val slf4j       = "1.7.36"
-    val log4s       = "1.10.0"
-    val logback     = "1.2.11"
-    val janino      = "3.1.7"
-    val logstash    = "7.0"
-    val pureConfig  = "0.17.1"
-    val monocle     = "3.1.0"
-    val circe       = "0.14.2"
-    val doobie      = "0.6.0"
-    val flyway      = "6.0.4"
+    val http4s           = "0.23.16"
+    val http4sBlaze      = "0.23.12"
+    val http4sBoopickle  = "0.23.11"
+    val http4sXml        = "0.23.12"
+    val http4sPrometheus = "0.23.12"
+    val squants          = "1.8.3"
+    val commonsHttp      = "2.0.2"
+    val unboundId        = "3.2.1"
+    val jwt              = "9.1.2"
+    val slf4j            = "2.0.4"
+    val log4s            = "1.10.0"
+    val logback          = "1.4.5"
+    val janino           = "3.1.9"
+    val logstash         = "7.0"
+    val pureConfig       = "0.17.2"
+    val monocle          = "3.1.0"
+    val circe            = "0.14.3"
+    val doobie           = "0.6.0"
+    val flyway           = "6.0.4"
 
     // test libraries
     val xmlUnit                     = "1.6"
@@ -71,7 +75,7 @@ object Settings {
     val guava               = "31.0.1-jre"
     val prometheusClient    = "0.14.1"
     val geminiLocales       = "0.7.0"
-    val pprint              = "0.7.3"
+    val pprint              = "0.8.0"
     val jaxb                = "3.0.1"
 
     // EPICS Libraries
@@ -84,13 +88,13 @@ object Settings {
     val gppUI   = "0.0.3"
 
     // Lucuma
-    val lucumaCore    = "0.46.0"
-    val lucumaUI      = "0.39.0"
+    val lucumaCore    = "0.57.0"
+    val lucumaUI      = "0.50.1"
     val lucumaSchemas = "0.33.0"
 
     val clue = "0.23.1"
 
-    val sttp = "3.7.2"
+    val sttp = "3.8.3"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"
@@ -151,7 +155,7 @@ object Settings {
       "io.prometheus" % "simpleclient_common" % LibraryVersions.prometheusClient
     val Logging          = Def.setting(Seq(JuliSlf4j, Log4s.value) ++ Logback)
     val PureConfig       = Seq(
-      "com.github.pureconfig" %% "pureconfig"             % LibraryVersions.pureConfig,
+      "com.github.pureconfig" %% "pureconfig-core"        % LibraryVersions.pureConfig,
       "com.github.pureconfig" %% "pureconfig-cats"        % LibraryVersions.pureConfig,
       "com.github.pureconfig" %% "pureconfig-cats-effect" % LibraryVersions.pureConfig,
       "com.github.pureconfig" %% "pureconfig-http4s"      % LibraryVersions.pureConfig
@@ -161,18 +165,18 @@ object Settings {
     val ScalaXml         =
       Def.setting("org.scala-lang.modules" %%% "scala-xml" % LibraryVersions.scalaXml)
     val Http4s           = Seq("org.http4s" %% "http4s-dsl" % LibraryVersions.http4s,
-                     "org.http4s" %% "http4s-blaze-server" % LibraryVersions.http4s
+                     "org.http4s" %% "http4s-blaze-server" % LibraryVersions.http4sBlaze
     )
     val Http4sClient     = Seq(
       "org.http4s" %% "http4s-dsl"          % LibraryVersions.http4s,
       "org.http4s" %% "http4s-ember-client" % LibraryVersions.http4s
     )
-    val Http4sBoopickle  = "org.http4s"    %% "http4s-boopickle" % LibraryVersions.http4s
+    val Http4sBoopickle  = "org.http4s"    %% "http4s-boopickle" % LibraryVersions.http4sBoopickle
     val Http4sCore       = "org.http4s"    %% "http4s-core"      % LibraryVersions.http4s
     val Http4sCirce      = "org.http4s"    %% "http4s-circe"     % LibraryVersions.http4s
-    val Http4sXml        = "org.http4s"    %% "http4s-scala-xml" % LibraryVersions.http4s
+    val Http4sXml        = "org.http4s"    %% "http4s-scala-xml" % LibraryVersions.http4sXml
     val Http4sPrometheus =
-      "org.http4s" %% "http4s-prometheus-metrics" % LibraryVersions.http4s
+      "org.http4s" %% "http4s-prometheus-metrics" % LibraryVersions.http4sPrometheus
     val Monocle = Def.setting(
       Seq(
         "dev.optics" %%% "monocle-core"   % LibraryVersions.monocle,
@@ -201,23 +205,21 @@ object Settings {
     )
     val ScalaJSDom              = Def.setting("org.scala-js" %%% "scalajs-dom" % LibraryVersions.scalaDom)
     val ScalaJSReactCommon      =
-      Def.setting("io.github.cquiroz.react" %%% "common" % LibraryVersions.scalaJSReactCommon)
-    val ScalaJSReactCats        =
-      Def.setting("io.github.cquiroz.react" %%% "cats" % LibraryVersions.scalaJSReactCommon)
+      Def.setting("io.github.cquiroz.react" %%% "lucuma-react-common" % LibraryVersions.lucumaReact)
     val ScalaJSReactSemanticUI  = Def.setting(
-      "io.github.cquiroz.react" %%% "react-semantic-ui" % LibraryVersions.scalaJSSemanticUI
+      "edu.gemini" %%% "lucuma-react-semantic-ui" % LibraryVersions.lucumaReact
     )
     val ScalaJSReactVirtualized = Def.setting(
       "io.github.cquiroz.react" %%% "react-virtualized" % LibraryVersions.scalaJSReactVirtualized
     )
     val ScalaJSReactDraggable   = Def.setting(
-      "io.github.cquiroz.react" %%% "react-draggable" % LibraryVersions.scalaJSReactDraggable
+      "edu.gemini" %%% "lucuma-react-draggable" % LibraryVersions.lucumaReact
     )
     val ScalaJSReactSortable    = Def.setting(
       "io.github.cquiroz.react" %%% "react-sortable-hoc" % LibraryVersions.scalaJSReactSortable
     )
     val ScalaJSReactClipboard   = Def.setting(
-      "io.github.cquiroz.react" %%% "react-clipboard" % LibraryVersions.scalaJSReactClipboard
+      "edu.gemini" %%% "lucuma-react-clipboard" % LibraryVersions.lucumaReact
     )
     val BooPickle               = Def.setting("io.suzaku" %%% "boopickle" % LibraryVersions.booPickle)
     val JavaTimeJS              =

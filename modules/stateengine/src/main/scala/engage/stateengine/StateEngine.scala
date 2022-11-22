@@ -3,8 +3,8 @@
 
 package engage.stateengine
 
-import cats.effect.std.Queue
 import cats.effect.Concurrent
+import cats.effect.std.Queue
 import cats.syntax.all._
 import fs2.Stream
 

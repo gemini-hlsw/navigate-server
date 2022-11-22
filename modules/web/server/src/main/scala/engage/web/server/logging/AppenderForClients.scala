@@ -3,7 +3,6 @@
 
 package engage.web.server.logging
 
-import java.time.Instant
 import cats.effect.IO
 import cats.effect.std.Dispatcher
 import cats.syntax.all._
@@ -12,6 +11,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.AppenderBase
 import engage.model.enums.ServerLogLevel
 import fs2.concurrent.Topic
+
+import java.time.Instant
 
 /**
  * Custom appender that can take log events from logback and send them to clients via the common

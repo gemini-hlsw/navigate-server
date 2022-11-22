@@ -3,17 +3,19 @@
 
 package engage.web.server.security
 
-import java.time.Instant
 import cats._
 import cats.data.Kleisli
 import cats.data.OptionT
 import cats.effect.Sync
 import cats.syntax.all._
+import engage.model.security.UserDetails
 import org.http4s._
 import org.http4s.dsl._
 import org.http4s.server.AuthMiddleware
+
+import java.time.Instant
+
 import AuthenticationService.AuthResult
-import engage.model.security.UserDetails
 
 /**
  * Bridge between http4s authentication and the actual internal authenticator

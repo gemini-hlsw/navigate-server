@@ -7,12 +7,15 @@ import cats.effect.Async
 import cats.syntax.all._
 import engage.model.security.UserDetails
 import engage.server.EngageEngine
-import engage.web.server.security.{ AuthenticationService, Http4sAuthentication, TokenRefresher }
-import org.http4s.{ AuthedRoutes, HttpRoutes }
+import engage.web.server.security.AuthenticationService
+import engage.web.server.security.Http4sAuthentication
+import engage.web.server.security.TokenRefresher
+import lucuma.core.model.Observation.{Id => ObsId}
+import org.http4s.AuthedRoutes
+import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.middleware.GZip
 import squants.space.AngleConversions._
-import lucuma.core.model.Observation.{ Id => ObsId }
 
 class EngageCommandRoutes[F[_]: Async](
   auth: AuthenticationService[F],

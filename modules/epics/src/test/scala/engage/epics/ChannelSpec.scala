@@ -3,16 +3,19 @@
 
 package engage.epics
 
-import cats.effect.{ Concurrent, IO, SyncIO }
+import cats.effect.Concurrent
+import cats.effect.IO
+import cats.effect.SyncIO
 import cats.effect.kernel.Resource
 import cats.effect.std.Dispatcher
 import cats.implicits._
 import gov.aps.jca.cas.ServerContext
 import munit.CatsEffectSuite
-import Channel.StreamEvent._
 
 import java.util.concurrent.TimeUnit
 import scala.concurrent.duration.FiniteDuration
+
+import Channel.StreamEvent._
 
 class ChannelSpec extends CatsEffectSuite {
 
@@ -31,7 +34,7 @@ class ChannelSpec extends CatsEffectSuite {
     assertIOBoolean(
       (
         for {
-          dsp <- Dispatcher[IO]
+          dsp <- Dispatcher.sequential[IO]
           ch  <- srv.getChannel[Int]("test:heartbeat")
           _   <- Resource.eval(ch.connect)
           s   <- ch.eventStream(dsp, Concurrent[IO])
