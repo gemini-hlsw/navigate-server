@@ -75,7 +75,7 @@ class EngageMappings[F[_]: Sync](server: EngageEngine[F])(override val schema: S
 object EngageMappings {
 
   def loadSchema[F[_]: Sync]: F[Schema] = Sync[F].defer {
-    Using(Source.fromResource("newTCC.graphql", getClass.getClassLoader)) { src =>
+    Using(Source.fromResource("NewTCC.graphql", getClass.getClassLoader)) { src =>
       Schema(src.mkString).right.get
     }.liftTo[F]
   }

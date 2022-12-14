@@ -292,7 +292,8 @@ object Settings {
       )
     )
 
-    val GrackleRoutes = "edu.gemini"     %% "lucuma-graphql-routes-grackle" % LibraryVersions.graphQLRoutes
+    val GrackleRoutes =
+      "edu.gemini" %% "lucuma-graphql-routes-grackle" % LibraryVersions.graphQLRoutes
 
     val Clue          = "edu.gemini" %% "clue-core"              % LibraryVersions.clue
     val ClueHttp4s    = "edu.gemini" %% "clue-http4s-jdk-client" % LibraryVersions.clue
@@ -306,7 +307,7 @@ object Settings {
       )
     )
 
-    val Natchez = "org.tpolecat"   %% "natchez-core"             % LibraryVersions.natchez
+    val Natchez = "org.tpolecat" %% "natchez-core" % LibraryVersions.natchez
   }
 
   object PluginVersions {
