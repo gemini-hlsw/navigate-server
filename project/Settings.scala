@@ -14,7 +14,7 @@ object Settings {
     val scalajsReact            = "2.1.1"
     val booPickle               = "1.4.0"
     val javaTimeJS              = "2.5.0"
-    val lucumaReact             = "0.15.0"
+    val lucumaReact             = "0.25.0"
     val scalaJSSemanticUI       = "0.13.1"
     val scalaJSReactVirtualized = "0.13.1"
     val scalaJSReactClipboard   = "1.5.1"
@@ -29,7 +29,7 @@ object Settings {
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
-    val catsTime     = "0.5.0"
+    val catsTime     = "0.5.1"
 
     // Logging
     val log4Cats         = "2.5.0"
@@ -88,9 +88,9 @@ object Settings {
     val gppUI   = "0.0.3"
 
     // Lucuma
-    val lucumaCore    = "0.58.0"
-    val lucumaUI      = "0.50.1"
-    val lucumaSchemas = "0.33.0"
+    val lucumaCore    = "0.60.0"
+    val lucumaUI      = "0.60.1"
+    val lucumaSchemas = "0.38.4"
 
     val grackle = "0.10.1"
 
