@@ -4,7 +4,8 @@
 package engage.server.tcs
 
 import cats.effect.{ IO, Ref }
-import cats.syntax.option._
+import cats.effect.syntax.all._
+import cats.syntax.all._
 import engage.model.enums.{ DomeMode, ShutterMode }
 import engage.server.acm.CadDirective
 import engage.server.epicsdata.{ BinaryOnOff, BinaryYesNo }
@@ -22,7 +23,8 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
 
   test("Mount commands") {
     for {
-      (st, ctr) <- createController
+      x <- createController
+      (st, ctr) = x
       _         <- ctr.mcsPark
       _         <- ctr.mcsFollow(enable = true)
       rs        <- st.get
@@ -38,7 +40,8 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
     val testAngle = 123.456.degrees
 
     for {
-      (st, ctr) <- createController
+      x <- createController
+      (st, ctr) = x
       _         <- ctr.rotPark
       _         <- ctr.rotFollow(enable = true)
       _         <- ctr.rotStop(useBrakes = true)
@@ -63,7 +66,8 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
     val testVentWest = 0.2
 
     for {
-      (st, ctr) <- createController
+      x <- createController
+      (st, ctr) = x
       _         <- ctr.ecsCarouselMode(DomeMode.MinVibration,
                                        ShutterMode.Tracking,
                                        testHeight,
@@ -103,7 +107,8 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
     )
 
     for {
-      (st, ctr) <- createController
+      x <- createController
+      (st, ctr) = x
       _         <- ctr.applyTcsConfig(TcsConfig(target))
       rs        <- st.get
     } yield {

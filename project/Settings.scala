@@ -25,7 +25,7 @@ object Settings {
     val catsEffect   = "3.4.2"
     val cats         = "2.9.0"
     val mouse        = "1.2.1"
-    val fs2          = "3.3.0"
+    val fs2          = "3.4.0"
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
@@ -44,7 +44,7 @@ object Settings {
     val commonsHttp      = "2.0.2"
     val unboundId        = "3.2.1"
     val jwt              = "9.1.2"
-    val slf4j            = "2.0.5"
+    val slf4j            = "2.0.6"
     val log4s            = "1.10.0"
     val logback          = "1.4.5"
     val janino           = "3.1.9"
@@ -92,12 +92,19 @@ object Settings {
     val lucumaUI      = "0.50.1"
     val lucumaSchemas = "0.33.0"
 
+    val grackle = "0.10.1"
+
+    val graphQLRoutes = "0.5.6"
+
     val clue = "0.23.1"
 
     val sttp = "3.8.5"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"
+
+    // Natchez
+    val natchez = "0.2.2"
 
   }
 
@@ -277,6 +284,16 @@ object Settings {
     val LucumaUI      = Def.setting("edu.gemini" %%% "lucuma-ui" % LibraryVersions.lucumaUI)
     val LucumaSchemas = "edu.gemini" %% "lucuma-schemas" % LibraryVersions.lucumaSchemas
 
+    val Grackle = Def.setting(
+      Seq(
+        "edu.gemini" %% "gsp-graphql-core"    % LibraryVersions.grackle,
+        "edu.gemini" %% "gsp-graphql-generic" % LibraryVersions.grackle,
+        "edu.gemini" %% "gsp-graphql-circe"   % LibraryVersions.grackle
+      )
+    )
+
+    val GrackleRoutes = "edu.gemini"     %% "lucuma-graphql-routes-grackle" % LibraryVersions.graphQLRoutes
+
     val Clue          = "edu.gemini" %% "clue-core"              % LibraryVersions.clue
     val ClueHttp4s    = "edu.gemini" %% "clue-http4s-jdk-client" % LibraryVersions.clue
     val ClueGenerator = "edu.gemini" %% "clue-generator"         % LibraryVersions.clue
@@ -288,6 +305,8 @@ object Settings {
         "com.softwaremill.sttp.client3" %%% "cats"  % LibraryVersions.sttp
       )
     )
+
+    val Natchez = "org.tpolecat"   %% "natchez-core"             % LibraryVersions.natchez
   }
 
   object PluginVersions {

@@ -116,9 +116,11 @@ lazy val engage_web_server = project
                                 Log4Cats.value,
                                 Http4sCirce,
                                 BooPickle.value,
-                                Http4sBoopickle
+                                Http4sBoopickle,
+                                GrackleRoutes,
+                                Natchez
     ) ++
-      Http4sClient ++ Http4s ++ PureConfig ++ Logging.value ++ MUnit.value,
+      Http4sClient ++ Http4s ++ PureConfig ++ Logging.value ++ MUnit.value ++ Grackle.value,
     // Supports launching the server in the background
     reStart / mainClass  := Some("engage.web.server.http4s.WebServerLauncher"),
     Compile / bspEnabled := false

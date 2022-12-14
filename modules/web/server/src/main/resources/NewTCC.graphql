@@ -1,0 +1,28 @@
+enum ParkStatus {
+    NOT_PARKED
+    PARKED
+}
+
+enum FollowStatus {
+    NOT_FOLLOWING
+    FOLLOWING
+}
+
+type MountStatus {
+    parked: ParkStatus!
+    follow: FollowStatus!
+}
+
+type TelescopeStatus {
+    mount: MountStatus!
+}
+
+type Query {
+    telescopeStatus: TelescopeStatus!
+}
+
+type Mutation {
+    mountPark: ParkStatus!
+    mountFollow(enable: Boolean!): FollowStatus!
+}
+

@@ -37,6 +37,7 @@ import org.typelevel.log4cats.Logger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
 import pureconfig.ConfigObjectSource
 import pureconfig.ConfigSource
+import natchez.Trace.Implicits.noop
 
 import java.io.FileInputStream
 import java.nio.file.{Path => FilePath}
@@ -125,7 +126,8 @@ object WebServerLauncher extends IOApp with LogInitialization {
       "/"                    -> new StaticRoutes(conf.mode === Mode.Development, OcsBuildInfo.builtAtMillis).service,
       "/api/engage/commands" -> new EngageCommandRoutes(as, se).service,
       "/api"                 -> new EngageUIApiRoutes(conf.site, conf.mode, as, clientsDb, outputs)
-        .service(wsBuilder)
+        .service(wsBuilder),
+      "/graphqlapi"          -> new GraphQlRoutes(se).service(wsBuilder)
     )
 
     val pingRouter = Router[F](

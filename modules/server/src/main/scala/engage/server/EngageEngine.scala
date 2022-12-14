@@ -49,6 +49,7 @@ trait EngageEngine[F[_]] {
     shutterEnable:               Boolean
   ): F[Unit]
   def ecsVentGatesMove(gateEast: Double, westGate: Double): F[Unit]
+  
 }
 
 object EngageEngine {

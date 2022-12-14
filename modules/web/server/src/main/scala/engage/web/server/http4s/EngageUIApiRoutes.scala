@@ -205,7 +205,7 @@ class EngageUIApiRoutes[F[_]: Async](
         case _         => true
       }
 
-  // Messages with a clientId are only sent to the matching cliend
+  // Messages with a clientId are only sent to the matching client
   private def filterOutOnClientId(clientId: ClientId) =
     (e: EngageEvent) =>
       e match {

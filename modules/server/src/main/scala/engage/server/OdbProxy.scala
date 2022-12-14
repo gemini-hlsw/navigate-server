@@ -10,4 +10,5 @@ trait OdbProxy[F[_]] {}
 
 object OdbProxy {
   def build[F[_]: Applicative]: F[OdbProxy[F]] = new OdbProxy[F] {}.pure[F]
+  def dummy[F[_]: Applicative]: OdbProxy[F] = new OdbProxy[F] {}
 }
