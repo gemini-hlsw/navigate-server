@@ -9,9 +9,9 @@ import lucuma.core.util.Enumerated
 sealed abstract class DomeMode(val tag: String) extends Product with Serializable
 
 object DomeMode {
-  case object Basic        extends DomeMode("basic")
-  case object MinScatter   extends DomeMode("minScatter")
-  case object MinVibration extends DomeMode("minVibration")
+  case object Basic        extends DomeMode("Basic")
+  case object MinScatter   extends DomeMode("MinScatter")
+  case object MinVibration extends DomeMode("MinVibration")
 
   implicit val domeModeEq: Eq[DomeMode] = Eq.instance {
     case (Basic, Basic)               => true
@@ -22,4 +22,5 @@ object DomeMode {
 
   implicit val domeModeEnum: Enumerated[DomeMode] =
     Enumerated.from(Basic, MinScatter, MinVibration).withTag(_.tag)
+
 }

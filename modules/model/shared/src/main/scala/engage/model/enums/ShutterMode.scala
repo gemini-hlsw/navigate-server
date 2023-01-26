@@ -9,8 +9,8 @@ import lucuma.core.util.Enumerated
 abstract class ShutterMode(val tag: String) extends Product with Serializable
 
 object ShutterMode {
-  case object FullyOpen extends ShutterMode("fullyOpen")
-  case object Tracking  extends ShutterMode("tracking")
+  case object FullyOpen extends ShutterMode("FullyOpen")
+  case object Tracking  extends ShutterMode("Tracking")
 
   implicit val shutterModeEq: Eq[ShutterMode] = Eq.instance {
     case (FullyOpen, FullyOpen) => true

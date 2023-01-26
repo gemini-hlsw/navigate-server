@@ -7,6 +7,7 @@ import cats.effect.Async
 import cats.effect.Resource
 import cats.syntax.option._
 import org.epics.ca.Context
+import org.epics.ca.impl.LibraryConfiguration.PropertyNames.CA_REPEATER_DISABLE
 import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_ADDR_LIST
 import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_AUTO_ADDR_LIST
 import org.epics.ca.impl.ProtocolConfiguration.PropertyNames.EPICS_CA_CONN_TMO
@@ -39,6 +40,7 @@ object EpicsService {
     addrList:          Option[List[InetAddress]],
     autoAddrList:      Option[Boolean],
     connectionTimeout: Option[FiniteDuration],
+    enableRepeater:    Option[Boolean],
     repeaterPort:      Option[Int],
     serverPort:        Option[Int],
     maxArrayBytes:     Option[Int]
@@ -47,6 +49,8 @@ object EpicsService {
     def withAutoAddrList(enabled: Boolean): Builder           = this.copy(autoAddrList = enabled.some)
     def withConnectionTimeout(timeout: FiniteDuration): Builder =
       this.copy(connectionTimeout = timeout.some)
+    def withEnabledRepeater(enabled: Boolean): Builder          =
+      this.copy(enableRepeater = enabled.some)
     def withRepeaterPort(port:   Int): Builder = this.copy(repeaterPort = port.some)
     def withServerPort(port:     Int): Builder = this.copy(serverPort = port.some)
     def withMaxArrayBytes(limit: Int): Builder = this.copy(maxArrayBytes = limit.some)
@@ -55,11 +59,14 @@ object EpicsService {
       .eval {
         Async[F].delay {
           val props: Properties = System.getProperties
-          addrList.map(l => props.setProperty(EPICS_CA_ADDR_LIST.toString, l.mkString(" ")))
+          addrList.map(l =>
+            props.setProperty(EPICS_CA_ADDR_LIST.toString, l.map(_.getHostAddress).mkString(" "))
+          )
           autoAddrList.map(e => props.setProperty(EPICS_CA_AUTO_ADDR_LIST.toString, e.toString))
           connectionTimeout.map(x =>
             props.setProperty(EPICS_CA_CONN_TMO.toString, x.toSeconds.toString)
           )
+          enableRepeater.map(x => props.setProperty(CA_REPEATER_DISABLE.toString, (!x).toString))
           repeaterPort.map(x => props.setProperty(EPICS_CA_REPEATER_PORT.toString, x.toString))
           serverPort.map(x => props.setProperty(EPICS_CA_SERVER_PORT.toString, x.toString))
           maxArrayBytes.map(x => props.setProperty(EPICS_CA_MAX_ARRAY_BYTES.toString, x.toString))
@@ -71,7 +78,7 @@ object EpicsService {
       .map(new EpicsServiceImpl[F](_))
   }
 
-  def getBuilder: Builder = Builder(none, none, none, none, none, none)
+  def getBuilder: Builder = Builder(none, none, none, none, none, none, none)
 
   private def getContext[F[_]: Async](properties: Properties): Resource[F, Context] =
     Resource.make {

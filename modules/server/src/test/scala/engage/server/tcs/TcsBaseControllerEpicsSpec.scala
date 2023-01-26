@@ -32,7 +32,7 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
       assert(rs.telescopeParkDir.connected)
       assertEquals(rs.telescopeParkDir.value.get, CadDirective.MARK)
       assert(rs.mountFollow.connected)
-      assert(rs.mountFollow.value.get)
+      assertEquals(rs.mountFollow.value.get, BinaryOnOff.On)
     }
   }
 
@@ -51,7 +51,7 @@ class TcsBaseControllerEpicsSpec extends CatsEffectSuite {
       assert(rs.rotParkDir.connected)
       assertEquals(rs.rotParkDir.value.get, CadDirective.MARK)
       assert(rs.rotFollow.connected)
-      assert(rs.rotFollow.value.get)
+      assertEquals(rs.rotFollow.value.get, BinaryOnOff.On)
       assert(rs.rotStopBrake.connected)
       assertEquals(rs.rotStopBrake.value.get, BinaryYesNo.Yes)
       assert(rs.rotMoveAngle.connected)

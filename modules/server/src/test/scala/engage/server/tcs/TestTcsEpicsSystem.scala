@@ -54,10 +54,10 @@ object TestTcsEpicsSystem {
   case class State(
     telltale:         TestChannel.State[String],
     telescopeParkDir: TestChannel.State[CadDirective],
-    mountFollow:      TestChannel.State[Boolean],
+    mountFollow:      TestChannel.State[BinaryOnOff],
     rotStopBrake:     TestChannel.State[BinaryYesNo],
     rotParkDir:       TestChannel.State[CadDirective],
-    rotFollow:        TestChannel.State[Boolean],
+    rotFollow:        TestChannel.State[BinaryOnOff],
     rotMoveAngle:     TestChannel.State[Double],
     enclosure:        EnclosureChannelsState,
     sourceA:          TargetChannelsState
@@ -161,10 +161,10 @@ object TestTcsEpicsSystem {
         TelltaleChannel[F]("dummy", new TestChannel[F, State, String](s, Focus[State](_.telltale))),
       telescopeParkDir =
         new TestChannel[F, State, CadDirective](s, Focus[State](_.telescopeParkDir)),
-      mountFollow = new TestChannel[F, State, Boolean](s, Focus[State](_.mountFollow)),
+      mountFollow = new TestChannel[F, State, BinaryOnOff](s, Focus[State](_.mountFollow)),
       rotStopBrake = new TestChannel[F, State, BinaryYesNo](s, Focus[State](_.rotStopBrake)),
       rotParkDir = new TestChannel[F, State, CadDirective](s, Focus[State](_.rotParkDir)),
-      rotFollow = new TestChannel[F, State, Boolean](s, Focus[State](_.rotFollow)),
+      rotFollow = new TestChannel[F, State, BinaryOnOff](s, Focus[State](_.rotFollow)),
       rotMoveAngle = new TestChannel[F, State, Double](s, Focus[State](_.rotMoveAngle)),
       enclosure = buildEnclosureChannels(s),
       sourceA = buildTargetChannels(s, Focus[State](_.sourceA))

@@ -34,13 +34,13 @@ object TcsEpicsSystem {
 
     val mountParkCmd: ParameterlessCommandChannels[F]
 
-    val mountFollowCmd: Command1Channels[F, Boolean]
+    val mountFollowCmd: Command1Channels[F, BinaryOnOff]
 
     val rotStopCmd: Command1Channels[F, BinaryYesNo]
 
     val rotParkCmd: ParameterlessCommandChannels[F]
 
-    val rotFollowCmd: Command1Channels[F, Boolean]
+    val rotFollowCmd: Command1Channels[F, BinaryOnOff]
 
     val rotMoveCmd: Command1Channels[F, Double]
 
@@ -486,10 +486,10 @@ object TcsEpicsSystem {
   case class TcsChannels[F[_]](
     telltale:         TelltaleChannel[F],
     telescopeParkDir: Channel[F, CadDirective],
-    mountFollow:      Channel[F, Boolean],
+    mountFollow:      Channel[F, BinaryOnOff],
     rotStopBrake:     Channel[F, BinaryYesNo],
     rotParkDir:       Channel[F, CadDirective],
-    rotFollow:        Channel[F, Boolean],
+    rotFollow:        Channel[F, BinaryOnOff],
     rotMoveAngle:     Channel[F, Double],
     enclosure:        EnclosureChannels[F],
     sourceA:          TargetChannels[F]
@@ -587,10 +587,10 @@ object TcsEpicsSystem {
     for {
       tt  <- service.getChannel[String](top + "sad:health.VAL").map(TelltaleChannel(sysName, _))
       tpd <- service.getChannel[CadDirective](top + "telpark" + DirSuffix)
-      mf  <- service.getChannel[Boolean](top + "mcFollow.A")
+      mf  <- service.getChannel[BinaryOnOff](top + "mcFollow.A")
       rsb <- service.getChannel[BinaryYesNo](top + "rotStop.B")
       rpd <- service.getChannel[CadDirective](top + "rotPark" + DirSuffix)
-      rf  <- service.getChannel[Boolean](top + "crFollow.A")
+      rf  <- service.getChannel[BinaryOnOff](top + "crFollow.A")
       rma <- service.getChannel[Double](top + "rotMove.A")
       ecs <- buildEnclosureChannels(service, top)
       sra <- buildTargetChannels(service, top + "sourceA")
@@ -626,7 +626,7 @@ object TcsEpicsSystem {
     override val mcsFollowCommand: FollowCommand[F, TcsCommands[F]] =
       new FollowCommand[F, TcsCommands[F]] {
         override def setFollow(enable: Boolean): TcsCommands[F] = addParam(
-          tcsEpics.mountFollowCmd.setParam1(enable)
+          tcsEpics.mountFollowCmd.setParam1(enable.fold(BinaryOnOff.On, BinaryOnOff.Off))
         )
       }
 
@@ -645,7 +645,7 @@ object TcsEpicsSystem {
     override val rotFollowCommand: FollowCommand[F, TcsCommands[F]] =
       new FollowCommand[F, TcsCommands[F]] {
         override def setFollow(enable: Boolean): TcsCommands[F] = addParam(
-          tcsEpics.rotFollowCmd.setParam1(enable)
+          tcsEpics.rotFollowCmd.setParam1(enable.fold(BinaryOnOff.On, BinaryOnOff.Off))
         )
       }
 
@@ -774,7 +774,7 @@ object TcsEpicsSystem {
     override val mountParkCmd: ParameterlessCommandChannels[F] =
       ParameterlessCommandChannels(channels.telltale, channels.telescopeParkDir)
 
-    override val mountFollowCmd: Command1Channels[F, Boolean] =
+    override val mountFollowCmd: Command1Channels[F, BinaryOnOff] =
       Command1Channels(channels.telltale, channels.mountFollow)
 
     override val rotStopCmd: Command1Channels[F, BinaryYesNo] =
@@ -783,7 +783,7 @@ object TcsEpicsSystem {
     override val rotParkCmd: ParameterlessCommandChannels[F] =
       ParameterlessCommandChannels(channels.telltale, channels.rotParkDir)
 
-    override val rotFollowCmd: Command1Channels[F, Boolean] =
+    override val rotFollowCmd: Command1Channels[F, BinaryOnOff] =
       Command1Channels(channels.telltale, channels.rotFollow)
 
     override val rotMoveCmd: Command1Channels[F, Double] =
