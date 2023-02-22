@@ -41,6 +41,14 @@ pull_request_rules:
       add:
       - model
       remove: []
+- name: Label schema-util PRs
+  conditions:
+  - files~=^modules/schema-util/
+  actions:
+    label:
+      add:
+      - schema-util
+      remove: []
 - name: Label server PRs
   conditions:
   - files~=^modules/

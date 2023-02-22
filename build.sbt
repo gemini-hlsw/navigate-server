@@ -125,6 +125,7 @@ lazy val engage_web_server = project
   )
   .dependsOn(engage_server)
   .dependsOn(engage_model.jvm % "compile->compile;test->test")
+  .dependsOn(schema_util)
 
 lazy val engage_model = crossProject(JVMPlatform, JSPlatform)
   .crossType(CrossType.Full)
@@ -146,6 +147,17 @@ lazy val engage_model = crossProject(JVMPlatform, JSPlatform)
     // And add a custom one
     libraryDependencies += JavaTimeJS.value,
     scalaJSLinkerConfig ~= (_.withModuleKind(ModuleKind.CommonJSModule))
+  )
+
+lazy val schema_util = project
+  .in(file("modules/schema-util"))
+  .settings(commonSettings: _*)
+  .settings(
+    libraryDependencies ++= Seq(
+      CatsEffect.value,
+      Fs2,
+      Log4Cats.value
+    ) ++ MUnit.value ++ LucumaCore.value ++ Http4sClient ++ Grackle.value
   )
 
 lazy val engage_server = project
