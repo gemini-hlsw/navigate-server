@@ -22,10 +22,10 @@ object Settings {
     val scalaJSReactSortable    = "0.5.2"
 
     // Scala libraries
-    val catsEffect   = "3.4.5"
+    val catsEffect   = "3.4.8"
     val cats         = "2.9.0"
     val mouse        = "1.2.1"
-    val fs2          = "3.5.0"
+    val fs2          = "3.6.1"
     val shapeless    = "2.3.7"
     val scalaParsers = "1.1.2"
     val scalaXml     = "1.2.0"
@@ -43,7 +43,7 @@ object Settings {
     val squants          = "1.8.3"
     val commonsHttp      = "2.0.2"
     val unboundId        = "3.2.1"
-    val jwt              = "9.1.2"
+    val jwt              = "9.2.0"
     val slf4j            = "2.0.6"
     val log4s            = "1.10.0"
     val logback          = "1.4.5"
@@ -73,7 +73,7 @@ object Settings {
     val gmpStatusDatabase   = "0.3.7"
     val gmpCmdClientBridge  = "0.6.7"
     val guava               = "31.0.1-jre"
-    val prometheusClient    = "0.14.1"
+    val prometheusClient    = "0.16.0"
     val geminiLocales       = "0.7.0"
     val pprint              = "0.8.1"
     val jaxb                = "3.0.1"
@@ -88,23 +88,23 @@ object Settings {
     val gppUI   = "0.0.3"
 
     // Lucuma
-    val lucumaCore    = "0.63.2"
-    val lucumaUI      = "0.60.1"
-    val lucumaSchemas = "0.38.4"
+    val lucumaCore    = "0.64.0"
+    val lucumaUI      = "0.66.0"
+    val lucumaSchemas = "0.42.1"
 
-    val grackle = "0.10.2"
+    val grackle = "0.10.3"
 
-    val graphQLRoutes = "0.5.8"
+    val graphQLRoutes = "0.5.10"
 
-    val clue = "0.23.1"
+    val clue = "0.24.1"
 
-    val sttp = "3.8.8"
+    val sttp = "3.8.9"
 
     // Pure JS libraries
     val fomanticUI = "2.8.7"
 
     // Natchez
-    val natchez = "0.3.0"
+    val natchez = "0.3.1"
 
   }
 
