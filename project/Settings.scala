@@ -95,7 +95,7 @@ object Settings {
 
     val grackle = "0.11.0"
 
-    val graphQLRoutes = "0.5.11"
+    val graphQLRoutes = "0.6.3"
 
     val clue = "0.24.1"
 
