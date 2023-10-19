@@ -42,7 +42,7 @@ object Settings {
     val http4sXml        = "0.23.12"
     val http4sPrometheus = "0.23.12"
     val squants          = "1.8.3"
-    val commonsHttp      = "3.1"
+    val commonsHttp      = "20020423"
     val unboundId        = "3.2.1"
     val jwt              = "9.4.4"
     val slf4j            = "2.0.9"
