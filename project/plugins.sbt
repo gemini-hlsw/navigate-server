@@ -1,7 +1,7 @@
 resolvers ++= Resolver.sonatypeOssRepos("public")
 
 addDependencyTreePlugin
-addSbtPlugin("edu.gemini"       % "sbt-lucuma-app"      % "0.10.13")
+addSbtPlugin("edu.gemini"       % "sbt-lucuma-app"      % "0.11.9")
 // sbt revolver lets launching applications from the sbt console
 addSbtPlugin("io.spray"         % "sbt-revolver"        % "0.10.0")
 addSbtPlugin("com.timushev.sbt" % "sbt-updates"         % "0.6.4")
