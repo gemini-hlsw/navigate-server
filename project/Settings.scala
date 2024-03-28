@@ -14,7 +14,7 @@ object Settings {
     val catsEffect = "3.5.4"
     val cats       = "2.10.0"
     val mouse      = "1.2.3"
-    val fs2        = "3.10.1"
+    val fs2        = "3.10.2"
     val catsTime   = "0.5.1"
 
     // Logging
