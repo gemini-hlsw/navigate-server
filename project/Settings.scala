@@ -34,7 +34,7 @@ object Settings {
 
     // test libraries
     val scalaMock              = "5.2.0"
-    val munitCatsEffectVersion = "1.0.7"
+    val munitCatsEffectVersion = "2.0.0"
 
     val gmpCommandRecords   = "0.7.7"
     val giapi               = "1.1.7"
@@ -77,7 +77,7 @@ object Settings {
     )
     val MUnit            = Def.setting(
       Seq(
-        "org.typelevel" %% "munit-cats-effect-3" % LibraryVersions.munitCatsEffectVersion % Test
+        "org.typelevel" %% "munit-cats-effect" % LibraryVersions.munitCatsEffectVersion % Test
       )
     )
     val ScalaMock        = "org.scalamock" %% "scalamock"    % LibraryVersions.scalaMock % "test"
