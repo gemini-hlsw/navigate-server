@@ -23,7 +23,7 @@ import org.http4s.server.middleware.GZip
 import scala.concurrent.duration._
 
 class StaticRoutes[F[_]: Sync: Compression: Files]:
-  private val AppDir: String = "app"
+  private val DistDir: String = "dist"
 
   private val OneYear: Int = 365 * 24 * 60 * 60 // One year in seconds
 
@@ -33,10 +33,10 @@ class StaticRoutes[F[_]: Sync: Compression: Files]:
 
   def localFile(path: String, req: Request[F]): OptionT[F, Response[F]] =
     OptionT
-      .liftF(baseDir)
+      .liftF(uiBaseDir)
       .flatMap: dir =>
         StaticFile.fromPath(
-          Path.fromNioPath(dir.resolve(AppDir).resolve(path.stripPrefix("/"))),
+          Path.fromNioPath(dir.resolve(DistDir).resolve(path.stripPrefix("/"))),
           req.some
         )
 

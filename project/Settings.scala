@@ -12,7 +12,7 @@ object Settings {
 
     // Scala libraries
     val catsEffect = "3.5.4"
-    val cats       = "2.10.0"
+    val cats       = "2.12.0"
     val mouse      = "1.2.4"
     val fs2        = "3.10.2"
     val catsTime   = "0.5.1"
@@ -51,7 +51,7 @@ object Settings {
 
     // EPICS Libraries
     val ca  = "1.3.2"
-    val jca = "2.4.9"
+    val jca = "2.4.10"
 
     // Lucuma
     val lucumaCore    = "0.96.4"

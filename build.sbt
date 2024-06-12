@@ -23,6 +23,38 @@ Global / resolvers ++= Resolver.sonatypeOssRepos("public")
 ThisBuild / dockerExposedPorts ++= Seq(7070, 7071) // Must match deployed app.conf web-server.port
 ThisBuild / dockerBaseImage := "eclipse-temurin:17-jre"
 
+val mainCond       = "github.ref == 'refs/heads/main'"
+val geminiRepoCond = "startsWith(github.repository, 'gemini')"
+def allConds(conds: String*) = conds.mkString("(", " && ", ")")
+
+lazy val dockerHubLogin =
+  WorkflowStep.Run(
+    List(
+      "echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username nlsoftware --password-stdin"
+    ),
+    name = Some("Login to Docker Hub")
+  )
+
+lazy val sbtDockerPublish =
+  WorkflowStep.Sbt(
+    List("deploy/docker:publish"),
+    name = Some("Build and Publish Docker image")
+  )
+
+ThisBuild / githubWorkflowAddedJobs +=
+  WorkflowJob(
+    "deploy",
+    "Build and publish Docker image",
+    WorkflowStep.Checkout ::
+      WorkflowStep.SetupJava(githubWorkflowJavaVersions.value.toList.take(1)) :::
+      dockerHubLogin ::
+      sbtDockerPublish ::
+      Nil,
+    scalas = List(scalaVersion.value),
+    javas = githubWorkflowJavaVersions.value.toList.take(1),
+    cond = Some(allConds(mainCond, geminiRepoCond))
+  )
+
 enablePlugins(GitBranchPrompt)
 
 // Custom commands to facilitate web development
@@ -46,7 +78,7 @@ ThisBuild / evictionErrorLevel := Level.Info
 // Projects
 //////////////
 
-ThisBuild / crossScalaVersions := Seq("3.4.1")
+ThisBuild / crossScalaVersions := Seq("3.4.2")
 
 lazy val root = tlCrossRootProject.aggregate(
   epics,
@@ -54,7 +86,7 @@ lazy val root = tlCrossRootProject.aggregate(
   navigate_server,
   navigate_web_server,
   navigate_model,
-  deploy_navigate_server
+  deploy
 )
 
 lazy val epics = project
@@ -114,7 +146,9 @@ lazy val navigate_web_server = project
     buildInfoKeys ++= Seq[BuildInfoKey](name, version, buildInfoBuildNumber),
     buildInfoOptions += BuildInfoOption.BuildTime,
     buildInfoObject           := "OcsBuildInfo",
-    buildInfoPackage          := "navigate.web.server"
+    buildInfoPackage          := "navigate.web.server",
+    // Make UI available in development mode, as long as navigate-ui is in a sibling directory.
+    javaOptions += "-Dnavigate.ui.path=../../../../navigate-ui"
   )
   .dependsOn(navigate_server)
   .dependsOn(navigate_model % "compile->compile;test->test")
@@ -160,9 +194,9 @@ lazy val navigate_server = project
 /**
  * Project for the navigate server app for development
  */
-lazy val deploy_navigate_server = preventPublication(project.in(file("deploy/navigate-server")))
+lazy val deploy = preventPublication(project.in(file("deploy")))
   .dependsOn(navigate_web_server)
-  .aggregate(navigate_web_server)
+  .enablePlugins(NoPublishPlugin)
   .enablePlugins(DockerPlugin)
   .enablePlugins(JavaServerAppPackaging)
   .enablePlugins(GitBranchPrompt)
@@ -170,14 +204,9 @@ lazy val deploy_navigate_server = preventPublication(project.in(file("deploy/nav
   .settings(releaseAppMappings: _*)
   .settings(
     description          := "Navigate server",
-    Docker / packageName := "navigate-server",
+    Docker / packageName := "gpp-nav",
     dockerUpdateLatest   := true,
-    Universal / mappings ++= {
-      // Navigate UI project must be in sibling folder and be already built. See its README.md.
-      val clientDir = (ThisBuild / baseDirectory).value.getParentFile / "navigate-ui" / "dist"
-      directory(clientDir)
-        .map(path => path._1 -> ("app/" + path._1.relativeTo(clientDir).get.getPath))
-    }
+    dockerUsername       := Some("noirlab")
   )
 
 // Mappings for a particular release.
