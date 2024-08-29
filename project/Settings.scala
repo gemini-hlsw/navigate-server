@@ -13,8 +13,8 @@ object Settings {
     // Scala libraries
     val catsEffect = "3.5.4"
     val cats       = "2.12.0"
-    val mouse      = "1.3.1"
-    val fs2        = "3.10.2"
+    val mouse      = "1.3.2"
+    val fs2        = "3.11.0"
     val catsTime   = "0.5.1"
 
     // Logging
@@ -23,13 +23,13 @@ object Settings {
 
     val http4s      = "0.23.27"
     val http4sBlaze = "0.23.16"
-    val slf4j       = "2.0.13"
+    val slf4j       = "2.0.16"
     val log4s       = "1.10.0"
-    val logback     = "1.5.6"
+    val logback     = "1.5.7"
     val janino      = "3.1.12"
     val logstash    = "7.0"
     val pureConfig  = "0.17.7"
-    val monocle     = "3.2.0"
+    val monocle     = "3.3.0"
     val circe       = "0.14.9"
 
     // test libraries
@@ -54,7 +54,7 @@ object Settings {
     val jca = "2.4.10"
 
     // Lucuma
-    val lucumaCore    = "0.100.1"
+    val lucumaCore    = "0.103.1"
     val lucumaSchemas = "0.97.0"
 
     val grackle = "0.18.1"
@@ -64,7 +64,7 @@ object Settings {
     val clue = "0.35.0"
 
     // Natchez
-    val natchez = "0.3.5"
+    val natchez = "0.3.6"
   }
 
   /**
