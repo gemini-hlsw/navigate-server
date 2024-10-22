@@ -34,8 +34,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Install sbt
-        if: contains(runner.os, 'macos')
-        run: brew install sbt
+        uses: sbt/setup-sbt@v1
 
       - name: Checkout current branch (full)
         uses: actions/checkout@v4
@@ -51,12 +50,12 @@ jobs:
           java-version: 17
           cache: sbt
 
-      - name: Install sbt - TEMPORARY!
-        uses: sbt/setup-sbt@v1
-
       - name: sbt update
         if: matrix.java == 'temurin@17' && steps.setup-java-temurin-17.outputs.cache-hit == 'false'
         run: sbt +update
+
+      - name: Check that workflows are up to date
+        run: sbt githubWorkflowCheck
 
       - name: Check headers and formatting
         if: matrix.java == 'temurin@17' && matrix.os == 'ubuntu-latest'
@@ -81,7 +80,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.5.1]
+        scala: [3.5.2]
         java: [temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
@@ -96,9 +95,6 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: sbt
-
-      - name: Install sbt - TEMPORARY!
-        uses: sbt/setup-sbt@v1
 
       - name: sbt update
         if: matrix.java == 'temurin@17' && steps.setup-java-temurin-17.outputs.cache-hit == 'false'
