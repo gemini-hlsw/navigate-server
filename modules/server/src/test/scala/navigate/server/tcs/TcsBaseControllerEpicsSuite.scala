@@ -1336,6 +1336,8 @@ class TcsBaseControllerEpicsSuite extends CatsEffectSuite {
       r2       <- st.tcs.get
       _        <- ctr.lightPath(LightSource.Sky, LightSinkName.Ac)
       r3       <- st.tcs.get
+      _        <- ctr.lightPath(LightSource.AO, LightSinkName.Ac)
+      r4       <- st.tcs.get
     } yield {
       assert(r0.aoFoldMech.parkDir.connected)
       assert(r0.scienceFoldMech.position.connected)
@@ -1344,9 +1346,13 @@ class TcsBaseControllerEpicsSuite extends CatsEffectSuite {
       assert(r1.aoFoldMech.position.connected)
       assertEquals(r1.aoFoldMech.position.value, "IN".some)
       assertEquals(r1.scienceFoldMech.position.value, "ao2gmos3".some)
+      assertEquals(r2.aoFoldMech.parkDir.value, CadDirective.MARK.some)
       assertEquals(r2.scienceFoldMech.position.value, "gcal2gmos3".some)
       assert(r3.hrwfsMech.position.connected)
+      assertEquals(r3.scienceFoldMech.parkDir.value, CadDirective.MARK.some)
       assertEquals(r3.hrwfsMech.position.value, "IN".some)
+      assertEquals(r4.aoFoldMech.position.value, "IN".some)
+      assertEquals(r4.scienceFoldMech.position.value, "ao2ac".some)
     }
   }
 

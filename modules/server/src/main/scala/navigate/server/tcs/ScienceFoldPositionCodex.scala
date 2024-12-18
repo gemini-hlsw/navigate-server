@@ -42,7 +42,7 @@ private[server] trait ScienceFoldPositionCodex:
       .toOption
 
   given Encoder[Position, String] = (a: Position) =>
-    val instAGName = a.sink.name + a.port.toString
+    val instAGName = if (a.sink === LightSinkName.Ac) a.sink.name else s"${a.sink.name}${a.port}"
 
     a.source match {
       case Sky  => instAGName

@@ -919,7 +919,7 @@ abstract class TcsBaseControllerEpics[F[_]: Async: Parallel: Temporal](
         s.hrwfsCommands.park.mark
       )
     val scienceFold = (s: TcsCommands[F]) =>
-      (port === 1).fold(
+      (port === 1 && from === LightSource.Sky).fold(
         s.scienceFoldCommands.park.mark,
         s.scienceFoldCommands.move.setPosition(
           ScienceFold.Position(from, to, port)
