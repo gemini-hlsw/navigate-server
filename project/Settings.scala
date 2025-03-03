@@ -25,7 +25,7 @@ object Settings {
     val http4sBlaze = "0.23.17"
     val slf4j       = "2.0.17"
     val log4s       = "1.10.0"
-    val logback     = "1.5.16"
+    val logback     = "1.5.17"
     val janino      = "3.1.12"
     val logstash    = "7.0"
     val pureConfig  = "0.17.8"
@@ -54,7 +54,7 @@ object Settings {
     val jca = "2.4.10"
 
     // Lucuma
-    val lucumaCore    = "0.115.2"
+    val lucumaCore    = "0.115.3"
     val lucumaSchemas = "0.121.0"
     val navigateUi    = "0.5.4"
 
