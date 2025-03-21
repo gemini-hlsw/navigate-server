@@ -4,6 +4,7 @@
 package navigate.web.server.http4s
 
 import cats.effect.Async
+import cats.effect.kernel.Ref
 import cats.syntax.all.*
 import ch.qos.logback.classic.spi.ILoggingEvent
 import fs2.compression.Compression
@@ -26,13 +27,20 @@ class GraphQlRoutes[F[_]: Async: Logger: Trace: Compression](
   logTopic:            Topic[F, ILoggingEvent],
   guideStateTopic:     Topic[F, GuideState],
   guidersQualityTopic: Topic[F, GuidersQualityValues],
-  telescopeStateTopic: Topic[F, TelescopeState]
+  telescopeStateTopic: Topic[F, TelescopeState],
+  logBuffer:           Ref[F, Seq[ILoggingEvent]]
 ) extends Http4sDsl[F] {
 
   private def commandServices(wsb: WebSocketBuilder2[F]): HttpRoutes[F] = GZip(
     Routes.forService(
       _ =>
-        NavigateMappings(eng, logTopic, guideStateTopic, guidersQualityTopic, telescopeStateTopic)
+        NavigateMappings(eng,
+                         logTopic,
+                         guideStateTopic,
+                         guidersQualityTopic,
+                         telescopeStateTopic,
+                         logBuffer
+        )
           .map(
             GraphQLService[F](_).some
           ),

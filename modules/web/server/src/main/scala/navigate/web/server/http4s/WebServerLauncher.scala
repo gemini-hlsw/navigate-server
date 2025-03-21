@@ -125,7 +125,8 @@ object WebServerLauncher extends IOApp with LogInitialization {
     guidersQualityTopic: Topic[F, GuidersQualityValues],
     telescopeStateTopic: Topic[F, TelescopeState],
     se:                  NavigateEngine[F],
-    clientsDb:           ClientsSetDb[F]
+    clientsDb:           ClientsSetDb[F],
+    logBuffer:           Ref[F, Seq[ILoggingEvent]]
   ): Resource[F, Server] = {
     val ssl: F[Option[SSLContext]] = conf.webServer.tls.map(makeContext[F]).sequence
 
@@ -135,7 +136,8 @@ object WebServerLauncher extends IOApp with LogInitialization {
                                        logTopic,
                                        guideTopic,
                                        guidersQualityTopic,
-                                       telescopeStateTopic
+                                       telescopeStateTopic,
+                                       logBuffer
       )
         .service(wsBuilder),
       ProxyRoute.toString -> proxyService
@@ -226,6 +228,21 @@ object WebServerLauncher extends IOApp with LogInitialization {
     case e: Exception       => Logger[F].error(e)("Navigate global error handler")
   }
 
+  /**
+   * Buffer log messages to be able to send old messages to new clients
+   */
+  def bufferLogMessages(log: Topic[IO, ILoggingEvent]): Resource[IO, Ref[IO, Seq[ILoggingEvent]]] =
+    val maxQueueSize = 30
+    for
+      buffer <- Ref.empty[IO, Seq[ILoggingEvent]].toResource
+      _      <- log
+                  .subscribe(1024)
+                  .evalMap(event => buffer.update(events => events.takeRight(maxQueueSize - 1) :+ event))
+                  .compile
+                  .drain
+                  .background
+    yield buffer
+
   /** Reads the configuration and launches the navigate engine and web server */
   def navigate[I]: IO[ExitCode] = {
 
@@ -271,6 +288,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
         cli    <- client(10.seconds)
         out    <- Resource.eval(Topic[IO, NavigateEvent])
         log    <- Resource.eval(Topic[IO, ILoggingEvent])
+        lb     <- bufferLogMessages(log)
         gd     <- Resource.eval(Topic[IO, GuideState])
         gq     <- Resource.eval(Topic[IO, GuidersQualityValues])
         ts     <- Resource.eval(Topic[IO, TelescopeState])
@@ -281,7 +299,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
                   )
         _      <- Resource.eval(publishStats(cs).compile.drain.start)
         engine <- engineIO(conf, cli)
-        _      <- webServer[IO](conf, out, log, gd, gq, ts, engine, cs)
+        _      <- webServer[IO](conf, out, log, gd, gq, ts, engine, cs, lb)
         _      <- Resource.eval(
                     out.subscribers
                       .evalMap(l => Logger[IO].debug(s"Subscribers amount: $l").whenA(l > 1))

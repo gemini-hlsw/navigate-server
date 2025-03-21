@@ -4,10 +4,12 @@
 package navigate.web.server.http4s
 
 import cats.effect.Sync
+import cats.effect.kernel.Ref
 import cats.syntax.all.*
 import ch.qos.logback.classic.spi.ILoggingEvent
 import edu.gemini.schema.util.SchemaStitcher
 import edu.gemini.schema.util.SourceResolver
+import fs2.Stream
 import fs2.concurrent.Topic
 import grackle.Env
 import grackle.Path
@@ -94,7 +96,8 @@ class NavigateMappings[F[_]: Sync](
   logTopic:            Topic[F, ILoggingEvent],
   guideStateTopic:     Topic[F, GuideState],
   guidersQualityTopic: Topic[F, GuidersQualityValues],
-  telescopeStateTopic: Topic[F, TelescopeState]
+  telescopeStateTopic: Topic[F, TelescopeState],
+  logBuffer:           Ref[F, Seq[ILoggingEvent]]
 )(
   override val schema: Schema
 ) extends CirceMapping[F] {
@@ -602,8 +605,8 @@ class NavigateMappings[F[_]: Sync](
         tpe = SubscriptionType,
         List(
           RootStream.computeCursor("logMessage") { (p, env) =>
-            logTopic
-              .subscribe(1024)
+            (Stream.evalSeq(logBuffer.get) ++
+              logTopic.subscribe(1024))
               .map(_.asJson)
               .map(circeCursor(p, env, _))
               .map(Result.success)
@@ -652,14 +655,16 @@ object NavigateMappings extends GrackleParsers {
     logTopic:            Topic[F, ILoggingEvent],
     guideStateTopic:     Topic[F, GuideState],
     guidersQualityTopic: Topic[F, GuidersQualityValues],
-    telescopeStateTopic: Topic[F, TelescopeState]
+    telescopeStateTopic: Topic[F, TelescopeState],
+    logBuffer:           Ref[F, Seq[ILoggingEvent]]
   ): F[NavigateMappings[F]] = loadSchema.flatMap {
     case Result.Success(schema)           =>
       new NavigateMappings[F](server,
                               logTopic,
                               guideStateTopic,
                               guidersQualityTopic,
-                              telescopeStateTopic
+                              telescopeStateTopic,
+                              logBuffer
       )(schema)
         .pure[F]
     case Result.Warning(problems, schema) =>
@@ -667,7 +672,8 @@ object NavigateMappings extends GrackleParsers {
                               logTopic,
                               guideStateTopic,
                               guidersQualityTopic,
-                              telescopeStateTopic
+                              telescopeStateTopic,
+                              logBuffer
       )(schema)
         .pure[F]
     case Result.Failure(problems)         =>

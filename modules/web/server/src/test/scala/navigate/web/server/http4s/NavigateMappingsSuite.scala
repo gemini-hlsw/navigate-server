@@ -6,7 +6,6 @@ package navigate.web.server.http4s
 import cats.*
 import cats.effect.IO
 import cats.effect.Ref
-import cats.effect.std.Dispatcher
 import cats.syntax.all.*
 import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.spi.ILoggingEvent
@@ -88,7 +87,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { mountFollow(enable: true) { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "mountFollow").exists(_ === OperationOutcome.success)
@@ -103,7 +103,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { mountPark { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "mountPark").exists(_ === OperationOutcome.success)
@@ -118,7 +119,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { scsFollow(enable: true) { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "scsFollow").exists(_ === OperationOutcome.success)
@@ -133,7 +135,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
                 |mutation { slew (
@@ -234,7 +237,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { tcsConfig ( config: {
@@ -315,7 +319,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { swapTarget ( swapConfig: {
@@ -375,7 +380,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { restoreTarget ( config: {
@@ -456,7 +462,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
                 |mutation { instrumentSpecifics (instrumentSpecificsParams: {
@@ -494,7 +501,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
                 |mutation { oiwfsTarget (target: {
@@ -529,7 +537,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { oiwfsProbeTracking (config: {
@@ -556,7 +565,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
 
       r <- mp.compileAndRun("mutation { oiwfsFollow(enable: true) { result } }")
     } yield assert(
@@ -571,7 +581,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
 
       r <- mp.compileAndRun("mutation { oiwfsPark { result } }")
     } yield assert(
@@ -586,7 +597,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { rotatorFollow(enable: true) { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "rotatorFollow").exists(_ === OperationOutcome.success)
@@ -600,7 +612,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { rotatorPark { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "rotatorPark").exists(_ === OperationOutcome.success)
@@ -614,7 +627,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { rotatorConfig( config: {
@@ -647,13 +661,14 @@ class NavigateMappingsSuite extends CatsEffectSuite {
     def putLogs(topic: Topic[IO, ILoggingEvent]): IO[Unit] =
       logEvents.map(topic.publish1).sequence.void
 
-    def s: IO[List[Result[SimpleLoggingEvent]]] = for {
+    for {
       eng  <- buildServer
       log  <- Topic[IO, ILoggingEvent]
       gd   <- Topic[IO, GuideState]
       gq   <- Topic[IO, GuidersQualityValues]
       ts   <- Topic[IO, TelescopeState]
-      mp   <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb   <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp   <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       logs <- mp.compileAndRunSubscription(
                 """
           | subscription {
@@ -671,19 +686,56 @@ class NavigateMappingsSuite extends CatsEffectSuite {
                 .toList
                 .timeout(Duration.fromNanos(10e9))
                 .both(putLogs(log).delayBy(Duration.fromNanos(1e9)))
-                .map(_._1)
-    } yield logs
-
-    Dispatcher.sequential[IO].use { d =>
-      s.map { l =>
-        val g: List[SimpleLoggingEvent] = l.collect { case Right(a) => a }
-        assertEquals(g.length, logEvents.length)
-        assert(g.exists(_.message === infoMsg))
-        assert(g.exists(_.message === warningMsg))
-        assert(g.exists(_.message === errorMsg))
-      }
+                .map(_._1.collect { case Right(a) => a })
+    } yield {
+      assert(logs.exists(_.message === infoMsg))
+      assert(logs.exists(_.message === warningMsg))
+      assert(logs.exists(_.message === errorMsg))
+      assertEquals(logEvents, logEvents)
     }
+  }
 
+  test("Persist log messages subscription") {
+    val debugMsg: String   = "debug message"
+    val infoMsg: String    = "info message"
+    val warningMsg: String = "warning message"
+
+    val logEvents       = List(
+      SimpleLoggingEvent(Timestamp.Min, Level.INFO, "", infoMsg),
+      SimpleLoggingEvent(Timestamp.Min, Level.WARN, "", warningMsg)
+    )
+    val bufferedMessage = SimpleLoggingEvent(Timestamp.Min, Level.DEBUG, "", debugMsg)
+
+    def putLogs(topic: Topic[IO, ILoggingEvent]): IO[Unit] =
+      logEvents.map(topic.publish1).sequence.void
+
+    for {
+      eng  <- buildServer
+      log  <- Topic[IO, ILoggingEvent]
+      gd   <- Topic[IO, GuideState]
+      gq   <- Topic[IO, GuidersQualityValues]
+      ts   <- Topic[IO, TelescopeState]
+      lb   <- Ref.of[IO, Seq[ILoggingEvent]](Seq(bufferedMessage))
+      mp   <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
+      logs <- mp.compileAndRunSubscription(
+                """
+          | subscription {
+          |   logMessage {
+          |     timestamp
+          |     level
+          |     thread
+          |     message
+          |   }
+          | }
+          |""".stripMargin
+              ).map(_.hcursor.downField("data").downField("logMessage").as[SimpleLoggingEvent])
+                .take(logEvents.length + 1)
+                .compile
+                .toList
+                .timeout(Duration.fromNanos(10e9))
+                .both(putLogs(log).delayBy(Duration.fromNanos(1e9)))
+                .map(_._1.collect { case Right(a) => a })
+    } yield assertEquals(logs, bufferedMessage +: logEvents)
   }
 
   test("Provide guide state subscription") {
@@ -735,7 +787,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       up  <- mp.compileAndRunSubscription(
                """
             | subscription {
@@ -771,7 +824,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           | query {
@@ -816,7 +870,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           | query {
@@ -869,7 +924,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       up  <- mp.compileAndRunSubscription(
                """
             | subscription {
@@ -925,7 +981,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun("mutation { guideDisable { result } }")
     } yield assert(
       extractResult[OperationOutcome](r, "guideDisable").exists(_ === OperationOutcome.success)
@@ -939,7 +996,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { guideEnable( config: {
@@ -966,7 +1024,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { oiwfsObserve( period: {
@@ -989,7 +1048,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { oiwfsStopObserve {
@@ -1009,7 +1069,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { acObserve( period: {
@@ -1032,7 +1093,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { acStopObserve {
@@ -1052,7 +1114,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { acStopObserve {
@@ -1073,7 +1136,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
         gd  <- Topic[IO, GuideState]
         gq  <- Topic[IO, GuidersQualityValues]
         ts  <- Topic[IO, TelescopeState]
-        mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+        lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+        mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
         r   <- mp.compileAndRun(
                  s"""
             |mutation { $mutation {
@@ -1107,7 +1171,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { guideEnable( config: {
@@ -1138,7 +1203,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       r   <- mp.compileAndRun(
                """
           |mutation { guideEnable( config: {
@@ -1169,7 +1235,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       p   <- mp.compileAndRun(
                """
           |mutation { lightpathConfig (
@@ -1233,7 +1300,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       p   <- mp.compileAndRun(
                """
           |query {
@@ -1261,7 +1329,8 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       gd  <- Topic[IO, GuideState]
       gq  <- Topic[IO, GuidersQualityValues]
       ts  <- Topic[IO, TelescopeState]
-      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts)
+      lb  <- Ref.empty[IO, Seq[ILoggingEvent]]
+      mp  <- NavigateMappings[IO](eng, log, gd, gq, ts, lb)
       p   <- mp.compileAndRun(
                """
           |query {
