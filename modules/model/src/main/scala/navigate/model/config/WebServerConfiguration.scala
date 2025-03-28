@@ -4,6 +4,8 @@
 package navigate.model.config
 
 import cats.Eq
+import com.comcast.ip4s.Host
+import com.comcast.ip4s.Port
 import org.http4s.Uri
 
 import java.nio.file.Path
@@ -41,9 +43,9 @@ object TLSConfig {
  *   Configuration of TLS, optional
  */
 case class WebServerConfiguration(
-  host:            String,
-  port:            Int,
-  insecurePort:    Int,
+  host:            Host,
+  port:            Port,
+  insecurePort:    Port,
   externalBaseUrl: String,
   proxyBaseUri:    Uri,
   tls:             Option[TLSConfig] = None

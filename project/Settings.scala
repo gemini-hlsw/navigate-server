@@ -21,16 +21,15 @@ object Settings {
     val log4Cats         = "2.7.0"
     val log4CatsLogLevel = "0.3.1"
 
-    val http4s      = "0.23.30"
-    val http4sBlaze = "0.23.17"
-    val slf4j       = "2.0.17"
-    val log4s       = "1.10.0"
-    val logback     = "1.5.18"
-    val janino      = "3.1.12"
-    val logstash    = "7.0"
-    val pureConfig  = "0.17.8"
-    val monocle     = "3.3.0"
-    val circe       = "0.14.12"
+    val http4s     = "0.23.30"
+    val slf4j      = "2.0.17"
+    val log4s      = "1.10.0"
+    val logback    = "1.5.18"
+    val janino     = "3.1.12"
+    val logstash   = "7.0"
+    val pureConfig = "0.17.8"
+    val monocle    = "3.3.0"
+    val circe      = "0.14.12"
 
     // test libraries
     val scalaMock              = "5.2.0"
@@ -116,10 +115,11 @@ object Settings {
       "com.github.pureconfig" %% "pureconfig-core"        % LibraryVersions.pureConfig,
       "com.github.pureconfig" %% "pureconfig-cats"        % LibraryVersions.pureConfig,
       "com.github.pureconfig" %% "pureconfig-cats-effect" % LibraryVersions.pureConfig,
-      "com.github.pureconfig" %% "pureconfig-http4s"      % LibraryVersions.pureConfig
+      "com.github.pureconfig" %% "pureconfig-http4s"      % LibraryVersions.pureConfig,
+      "com.github.pureconfig" %% "pureconfig-ip4s"        % LibraryVersions.pureConfig
     )
     val Http4s           = Seq("org.http4s" %% "http4s-dsl" % LibraryVersions.http4s,
-                     "org.http4s" %% "http4s-blaze-server" % LibraryVersions.http4sBlaze
+                     "org.http4s" %% "http4s-ember-server" % LibraryVersions.http4s
     )
     val Http4sClient     = Seq(
       "org.http4s" %% "http4s-dsl"          % LibraryVersions.http4s,

@@ -28,11 +28,10 @@ import navigate.web.server.common.baseDir
 import navigate.web.server.config.*
 import org.http4s.HttpRoutes
 import org.http4s.Uri
-import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.client.Client
 import org.http4s.ember.client.EmberClientBuilder
+import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.server.Router
-import org.http4s.server.SSLKeyStoreSupport.StoreInfo
 import org.http4s.server.Server
 import org.http4s.server.middleware.Logger as Http4sLogger
 import org.http4s.server.websocket.WebSocketBuilder2
@@ -41,14 +40,8 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import pureconfig.ConfigObjectSource
 import pureconfig.ConfigSource
 
-import java.io.FileInputStream
 import java.nio.file.Files as JavaFiles
-import java.security.KeyStore
-import java.security.Security
 import java.util.Locale
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
 import scala.concurrent.duration.*
 
 object WebServerLauncher extends IOApp with LogInitialization {
@@ -75,37 +68,12 @@ object WebServerLauncher extends IOApp with LogInitialization {
           .optional
           .withFallback(ConfigSource.resources("app.conf").optional)
 
-  def makeContext[F[_]: Sync](tls: TLSConfig): F[SSLContext] = Sync[F].blocking {
-    val ksStream   = new FileInputStream(tls.keyStore.toFile.getAbsolutePath)
-    val ks         = KeyStore.getInstance("JKS")
-    ks.load(ksStream, tls.keyStorePwd.toCharArray)
-    ksStream.close()
-    val trustStore = StoreInfo(tls.keyStore.toFile.getAbsolutePath, tls.keyStorePwd)
-
-    val tmf = {
-      val ksStream = new FileInputStream(trustStore.path)
-
-      val ks = KeyStore.getInstance("JKS")
-      ks.load(ksStream, tls.keyStorePwd.toCharArray)
-      ksStream.close()
-
-      val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm)
-
-      tmf.init(ks)
-      tmf.getTrustManagers
-    }
-
-    val kmf = KeyManagerFactory.getInstance(
-      Option(Security.getProperty("ssl.KeyManagerFactory.algorithm"))
-        .getOrElse(KeyManagerFactory.getDefaultAlgorithm)
+  def makeContext[F[_]: Network](tls: TLSConfig): F[TLSContext[F]] =
+    Network[F].tlsContext.fromKeyStoreFile(
+      tls.keyStore,
+      tls.keyStorePwd.toCharArray(),
+      tls.certPwd.toCharArray()
     )
-
-    kmf.init(ks, tls.certPwd.toCharArray)
-
-    val context = SSLContext.getInstance("TLS")
-    context.init(kmf.getKeyManagers, tmf, null)
-    context
-  }
 
   /** Resource that yields the running web server */
   def webServer[F[_]: Logger: Async: Dns: Files: Compression: Network](
@@ -114,7 +82,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
     se:        NavigateEngine[F],
     clientsDb: ClientsSetDb[F]
   ): Resource[F, Server] = {
-    val ssl: F[Option[SSLContext]] = conf.webServer.tls.map(makeContext[F]).sequence
+    val ssl: F[Option[TLSContext[F]]] = conf.webServer.tls.traverse(makeContext[F])
 
     def router(wsBuilder: WebSocketBuilder2[F], proxyService: HttpRoutes[F]) = Router[F](
       "/"                 -> new StaticRoutes().service,
@@ -136,28 +104,31 @@ object WebServerLauncher extends IOApp with LogInitialization {
       )
 
     def builder(proxyService: HttpRoutes[F]) =
-      BlazeServerBuilder[F]
-        .bindHttp(conf.webServer.port, conf.webServer.host)
+      EmberServerBuilder
+        .default[F]
+        .withHost(conf.webServer.host)
+        .withPort(conf.webServer.port)
         .withHttpWebSocketApp(wsb => loggedRoutes(wsb, proxyService).orNotFound)
 
     for
       proxyService <- ProxyBuilder.buildService[F](conf.webServer.proxyBaseUri, ProxyRoute)
-      server       <- ssl
-                        .map(_.fold(builder(proxyService))(builder(proxyService).withSslContext).resource)
-                        .toResource
-                        .flatten
+      server       <-
+        ssl.toResource
+          .flatMap(_.fold(builder(proxyService))(builder(proxyService).withTLS(_)).build)
     yield server
   }
 
-  def redirectWebServer[F[_]: Async](conf: WebServerConfiguration): Resource[F, Server] = {
+  def redirectWebServer[F[_]: Async: Network](conf: WebServerConfiguration): Resource[F, Server] = {
     val router = Router[F](
       "/" -> new RedirectToHttpsRoutes[F](443, conf.externalBaseUrl).service
     )
 
-    BlazeServerBuilder[F]
-      .bindHttp(conf.insecurePort, conf.host)
+    EmberServerBuilder
+      .default[F]
+      .withHost(conf.host)
+      .withPort(conf.insecurePort)
       .withHttpApp(router.orNotFound)
-      .resource
+      .build
   }
 
   def printBanner[F[_]: Logger](conf: NavigateConfiguration): F[Unit] = {
