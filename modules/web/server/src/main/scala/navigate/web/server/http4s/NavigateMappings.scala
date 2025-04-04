@@ -924,11 +924,11 @@ object NavigateMappings extends GrackleParsers {
     l.collectFirst { case ("mountOffload", BooleanValue(v)) => v }
       .map { mount =>
         TelescopeGuideConfig(
-          MountGuideOption.fromBoolean(mount),
+          MountGuideOption(mount),
           m1.map(M1GuideConfig.M1GuideOn(_)).getOrElse(M1GuideConfig.M1GuideOff),
           m2.isEmpty.fold(
             M2GuideConfig.M2GuideOff,
-            M2GuideConfig.M2GuideOn(ComaOption.fromBoolean(coma && m1.isDefined), m2.toSet)
+            M2GuideConfig.M2GuideOn(ComaOption(coma && m1.isDefined), m2.toSet)
           ),
           Some(dayTimeMode),
           probeGuide

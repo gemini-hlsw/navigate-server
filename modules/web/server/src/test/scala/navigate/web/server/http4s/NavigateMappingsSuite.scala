@@ -1770,11 +1770,11 @@ object NavigateMappingsTest {
       val cm = h.downField("m2Coma").as[Boolean].toOption
 
       GuideState(
-        MountGuideOption.fromBoolean(mnt),
+        MountGuideOption(mnt),
         m1.map(M1GuideConfig.M1GuideOn.apply).getOrElse(M1GuideConfig.M1GuideOff),
         m2.map(l =>
           if (l.isEmpty) M2GuideConfig.M2GuideOff
-          else M2GuideConfig.M2GuideOn(ComaOption.fromBoolean(cm.exists(identity)), l.toSet)
+          else M2GuideConfig.M2GuideOn(ComaOption(cm.exists(identity)), l.toSet)
         ).getOrElse(M2GuideConfig.M2GuideOff),
         false,
         false,

@@ -56,6 +56,14 @@ pull_request_rules:
       add:
       - server
       remove: []
+- name: Label server-clue PRs
+  conditions:
+  - files~=^modules/server-clue/
+  actions:
+    label:
+      add:
+      - server-clue
+      remove: []
 - name: Label stateengine PRs
   conditions:
   - files~=^modules/stateengine/

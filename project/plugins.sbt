@@ -9,3 +9,6 @@ addSbtPlugin("com.github.sbt" % "sbt-native-packager" % "1.11.1")
 
 // Extract metadata from sbt and make it available to the code
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.13.1")
+//
+// Generate code for GraphQL queries
+addSbtPlugin("edu.gemini"   % "sbt-clue"      % "0.43.1")

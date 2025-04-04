@@ -53,15 +53,16 @@ object Settings {
     val jca = "2.4.10"
 
     // Lucuma
-    val lucumaCore    = "0.120.0"
-    val lucumaSchemas = "0.126.0"
+    val lucumaCore    = "0.121.1"
+    val lucumaSchemas = "0.129.0"
+    val lucumaSSO     = "0.8.8"
     val navigateUi    = "0.5.11"
 
     val grackle = "0.24.0"
 
     val graphQLRoutes = "0.8.18"
 
-    val clue = "0.35.0"
+    val clue = "0.43.1"
 
     // Natchez
     val natchez = "0.3.7"
@@ -190,9 +191,12 @@ object Settings {
     val GrackleRoutes =
       "edu.gemini" %% "lucuma-graphql-routes" % LibraryVersions.graphQLRoutes
 
-    val Clue          = "edu.gemini" %% "clue-core"              % LibraryVersions.clue
-    val ClueHttp4s    = "edu.gemini" %% "clue-http4s-jdk-client" % LibraryVersions.clue
-    val ClueGenerator = "edu.gemini" %% "clue-generator"         % LibraryVersions.clue
+    val Clue          = "edu.gemini" %% "clue-core"      % LibraryVersions.clue
+    val ClueHttp4s    = "edu.gemini" %% "clue-http4s"    % LibraryVersions.clue
+    val ClueGenerator = "edu.gemini" %% "clue-generator" % LibraryVersions.clue
+
+    val LucumaSSO =
+      Def.setting("edu.gemini" %%% "lucuma-sso-backend-client" % LibraryVersions.lucumaSSO)
 
     val Natchez = "org.tpolecat" %% "natchez-core" % LibraryVersions.natchez
   }

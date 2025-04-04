@@ -70,6 +70,8 @@ val stopNavigateAllCommands  = List(
 addCommandAlias("startNavigateAll", startNavigateAllCommands.mkString(";", ";", ""))
 addCommandAlias("stopNavigateAll", stopNavigateAllCommands.mkString(";", ";", ""))
 
+ThisBuild / scalafixDependencies += "edu.gemini" % "lucuma-schemas_3" % LibraryVersions.lucumaSchemas
+
 //////////////
 // Projects
 //////////////
@@ -174,12 +176,17 @@ lazy val schema_util = project
 lazy val navigate_server = project
   .in(file("modules/server"))
   .settings(commonSettings: _*)
+  .enablePlugins(CluePlugin)
   .settings(
     libraryDependencies ++= Seq(
       CatsEffect.value,
       Fs2,
       Log4Cats.value,
-      Http4sCirce
+      Http4sCirce,
+      Clue,
+      ClueHttp4s,
+      LucumaSSO.value,
+      LucumaSchemas
     ) ++ MUnit.value ++ LucumaCore.value ++ Http4sClient
   )
   .dependsOn(navigate_model % "compile->compile;test->test")

@@ -779,7 +779,7 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel}](
       calcM2Source(m2ao, TipTiltSource.GAOS)
 
     if (m2 === BinaryOnOff.On && src.nonEmpty)
-      M2GuideConfig.M2GuideOn(ComaOption.fromBoolean(coma === BinaryOnOff.On), src)
+      M2GuideConfig.M2GuideOn(ComaOption(coma === BinaryOnOff.On), src)
     else M2GuideConfig.M2GuideOff
   }
 
@@ -813,7 +813,7 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel}](
       l <- fl
       m <- fm
     } yield GuideState(
-      MountGuideOption.fromBoolean(f =!= 0),
+      MountGuideOption(f =!= 0),
       calcM1Guide(a, h),
       calcM2Guide(i, d, e, c, b, g),
       j === BinaryYesNo.Yes,
