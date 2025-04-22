@@ -54,7 +54,7 @@ object Settings {
 
     // Lucuma
     val lucumaCore    = "0.121.1"
-    val lucumaSchemas = "0.129.0"
+    val lucumaSchemas = "0.130.1"
     val lucumaSSO     = "0.8.8"
     val navigateUi    = "0.5.13"
 
