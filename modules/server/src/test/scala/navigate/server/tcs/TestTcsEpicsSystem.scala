@@ -273,7 +273,6 @@ object TestTcsEpicsSystem {
     pwfs1TrackingState: ProbeTrackingStateState,
     pwfs2TrackingState: ProbeTrackingStateState,
     oiwfsTrackingState: ProbeTrackingStateState,
-    aowfsTrackingState: ProbeTrackingStateState,
     targetAdjust:       AdjustCommandState,
     originAdjust:       AdjustCommandState,
     pointingAdjust:     PointingAdjustCommandState,
@@ -418,12 +417,6 @@ object TestTcsEpicsSystem {
       nodBchopB = TestChannel.State.of("Off")
     ),
     oiwfsTrackingState = ProbeTrackingStateState(
-      nodAchopA = TestChannel.State.of("Off"),
-      nodAchopB = TestChannel.State.of("Off"),
-      nodBchopA = TestChannel.State.of("Off"),
-      nodBchopB = TestChannel.State.of("Off")
-    ),
-    aowfsTrackingState = ProbeTrackingStateState(
       nodAchopA = TestChannel.State.of("Off"),
       nodAchopB = TestChannel.State.of("Off"),
       nodBchopA = TestChannel.State.of("Off"),
@@ -986,7 +979,6 @@ object TestTcsEpicsSystem {
       p1ProbeTrackingState = buildProbeTrackingStateChannels(s, Focus[State](_.pwfs1TrackingState)),
       p2ProbeTrackingState = buildProbeTrackingStateChannels(s, Focus[State](_.pwfs2TrackingState)),
       oiProbeTrackingState = buildProbeTrackingStateChannels(s, Focus[State](_.oiwfsTrackingState)),
-      aoProbeTrackingState = buildProbeTrackingStateChannels(s, Focus[State](_.aowfsTrackingState)),
       targetAdjust = buildAdjustChannels(s, Focus[State](_.targetAdjust)),
       originAdjust = buildAdjustChannels(s, Focus[State](_.originAdjust)),
       pointingAdjust = buildPointingAdjustChannels(s, Focus[State](_.pointingAdjust)),

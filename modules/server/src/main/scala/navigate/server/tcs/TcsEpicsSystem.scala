@@ -209,7 +209,6 @@ object TcsEpicsSystem {
     val pwfs1ProbeGuideState: ProbeGuideState[F]
     val pwfs2ProbeGuideState: ProbeGuideState[F]
     val oiwfsProbeGuideState: ProbeGuideState[F]
-    val aowfsProbeGuideState: ProbeGuideState[F]
     // // This functions returns a F that, when run, first waits tcsSettleTime to absorb in-position transients, then waits
     // // for the in-position to change to true and stay true for stabilizationTime. It will wait up to `timeout`
     // // seconds for that to happen.
@@ -360,8 +359,6 @@ object TcsEpicsSystem {
           buildProbeGuideState(channels.telltale, channels.p2ProbeTrackingState)
         override val oiwfsProbeGuideState: ProbeGuideState[F]       =
           buildProbeGuideState(channels.telltale, channels.oiProbeTrackingState)
-        override val aowfsProbeGuideState: ProbeGuideState[F]       =
-          buildProbeGuideState(channels.telltale, channels.aoProbeTrackingState)
 
         private val tcsSettleTime = FiniteDuration(2800, MILLISECONDS)
         override def waitInPosition(

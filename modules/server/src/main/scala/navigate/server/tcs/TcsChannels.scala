@@ -63,7 +63,6 @@ case class TcsChannels[F[_]](
   p1ProbeTrackingState: ProbeTrackingStateChannels[F],
   p2ProbeTrackingState: ProbeTrackingStateChannels[F],
   oiProbeTrackingState: ProbeTrackingStateChannels[F],
-  aoProbeTrackingState: ProbeTrackingStateChannels[F],
   targetAdjust:         AdjustChannels[F],
   originAdjust:         AdjustChannels[F],
   pointingAdjust:       PointingModelAdjustChannels[F],
@@ -762,7 +761,6 @@ object TcsChannels {
       p1gs <- buildProbeTrackingStateChannels(service, tcsTop, "Pwfs1")
       p2gs <- buildProbeTrackingStateChannels(service, tcsTop, "Pwfs2")
       oigs <- buildProbeTrackingStateChannels(service, tcsTop, "Oiwfs")
-      aogs <- buildProbeTrackingStateChannels(service, tcsTop, "Aowfs")
       inpo <- service.getChannel[String](tcsTop.value, "sad:inPosition.VAL")
       tf   <- TargetFilterChannels.build(service, tcsTop)
     } yield TcsChannels[F](
@@ -808,7 +806,6 @@ object TcsChannels {
       p1gs,
       p2gs,
       oigs,
-      aogs,
       trad,
       orad,
       pmad,

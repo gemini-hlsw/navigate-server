@@ -523,33 +523,24 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel, Logger}](
                   .fold(calcM2Guide(sys.tcsEpics.status.pwfs2ProbeGuideState),
                         VerifiedEpics.pureF(M2BeamConfig.None)
                   )
-        aof  <- cfg.sources
-                  .contains(TipTiltSource.GAOS)
-                  .fold(calcM2Guide(sys.tcsEpics.status.aowfsProbeGuideState),
-                        VerifiedEpics.pureF(M2BeamConfig.None)
-                  )
         oicf <- sys.tcsEpics.status.m2oiGuide.map(_.map(M2BeamConfig.fromTcsGuideConfig))
         p1cf <- sys.tcsEpics.status.m2p1Guide.map(_.map(M2BeamConfig.fromTcsGuideConfig))
         p2cf <- sys.tcsEpics.status.m2p2Guide.map(_.map(M2BeamConfig.fromTcsGuideConfig))
-        aocf <- sys.tcsEpics.status.m2aoGuide.map(_.map(M2BeamConfig.fromTcsGuideConfig))
       } yield for {
         oi  <- oif
         p1  <- p1f
         p2  <- p2f
-        ao  <- aof
         oic <- oicf
         p1c <- p1cf
         p2c <- p2cf
-        aoc <- aocf
         r   <- {
-          val mustReset = oi =!= oic || p1 =!= p1c || p2 =!= p2c || ao =!= aoc
+          val mustReset = oi =!= oic || p1 =!= p1c || p2 =!= p2c
           mustReset.fold(
             (sys.tcsEpics.startCommand(timeout).m2GuideCommand.state(false).post *>
               sys.tcsEpics.startCommand(timeout).m2GuideResetCommand.mark.post *>
               setM2Guide(TipTiltSource.PWFS1, p1) *>
               setM2Guide(TipTiltSource.PWFS2, p2) *>
-              setM2Guide(TipTiltSource.OIWFS, oi) *>
-              setM2Guide(TipTiltSource.GAOS, ao)).verifiedRun(ConnectionTimeout),
+              setM2Guide(TipTiltSource.OIWFS, oi)).verifiedRun(ConnectionTimeout),
             ApplyCommandResult.Completed.pure[F]
           )
         }
@@ -796,13 +787,11 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel, Logger}](
     p1f <- getProbeGuideState(sys.tcsEpics.status.pwfs1ProbeGuideState)
     p2f <- getProbeGuideState(sys.tcsEpics.status.pwfs2ProbeGuideState)
     oif <- getProbeGuideState(sys.tcsEpics.status.oiwfsProbeGuideState)
-    aof <- getProbeGuideState(sys.tcsEpics.status.aowfsProbeGuideState)
   } yield for {
     p1 <- p1f
     p2 <- p2f
     oi <- oif
-    ao <- aof
-  } yield WfsGuideStates(p1, p2, oi, ao)
+  } yield WfsGuideStates(p1, p2, oi)
 
   // TODO: Add other WFSs when implemented
   def pauseWfsTracking(current: WfsGuideStates): VerifiedEpics[F, F, ApplyCommandResult] = {
@@ -1397,8 +1386,7 @@ object TcsBaseControllerEpics {
   case class WfsGuideStates(
     pwfs1: TrackingConfig,
     pwfs2: TrackingConfig,
-    oiwfs: TrackingConfig,
-    aowfs: TrackingConfig
+    oiwfs: TrackingConfig
   )
 
   extension (x: TelescopeGuideConfig) {
