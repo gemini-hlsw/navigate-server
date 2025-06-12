@@ -18,7 +18,7 @@ object Settings {
     val catsTime   = "0.5.1"
 
     // Logging
-    val log4Cats         = "2.7.0"
+    val log4Cats         = "2.7.1"
     val log4CatsLogLevel = "0.3.1"
 
     val http4s     = "0.23.30"
