@@ -76,7 +76,7 @@ ThisBuild / scalafixDependencies += "edu.gemini" % "lucuma-schemas_3" % LibraryV
 // Projects
 //////////////
 
-ThisBuild / crossScalaVersions := Seq("3.6.4")
+ThisBuild / crossScalaVersions := Seq("3.7.1")
 
 lazy val root = tlCrossRootProject.aggregate(
   epics,
