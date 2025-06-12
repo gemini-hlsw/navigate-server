@@ -60,7 +60,7 @@ object Settings {
 
     val graphQLRoutes = "0.8.18"
 
-    val clue = "0.43.1"
+    val clue = "0.45.0"
 
     // Natchez
     val natchez = "0.3.8"
