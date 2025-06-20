@@ -161,7 +161,7 @@ object TopicManager {
   /**
    * Create a new TopicManager with all topics initialized
    */
-  def create[F[_]: {Async, Logger}](dispatcher: Dispatcher[F]): Resource[F, TopicManager[F]] =
+  def create[F[_]: Async](dispatcher: Dispatcher[F]): Resource[F, TopicManager[F]] =
     for {
       navigateEvents        <- Resource.eval(Topic[F, NavigateEvent])
       loggingEvents         <- Resource.eval(Topic[F, ILoggingEvent])

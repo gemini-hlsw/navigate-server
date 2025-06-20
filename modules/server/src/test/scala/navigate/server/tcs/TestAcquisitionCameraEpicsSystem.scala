@@ -102,7 +102,7 @@ object TestAcquisitionCameraEpicsSystem {
   def build[F[_]: {Temporal, Parallel}](
     s: Ref[F, State]
   ): AcquisitionCameraEpicsSystem[F] = AcquisitionCameraEpicsSystem.buildSystem(
-    (timeout: FiniteDuration) =>
+    (_: FiniteDuration) =>
       VerifiedEpics.pureF[F, F, ApplyCommandResult](ApplyCommandResult.Completed),
     buildChannels(s)
   )

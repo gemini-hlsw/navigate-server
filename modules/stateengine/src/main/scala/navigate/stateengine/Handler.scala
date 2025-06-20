@@ -75,7 +75,7 @@ object Handler {
 
   // This class adds a method to Handler similar to flatMap, but the Streams resulting from both Handler instances
   // are concatenated in the reverse order.
-  extension [F[_]: Monad, D, V, A](self: Handler[F, D, V, A]) {
+  extension [F[_], D, V, A](@annotation.unused self: Handler[F, D, V, A]) {
     private def reverseConcatOpP(
       op1: Option[Stream[F, V]],
       op2: Option[Stream[F, V]]

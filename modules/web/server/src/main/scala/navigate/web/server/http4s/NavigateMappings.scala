@@ -12,8 +12,6 @@ import edu.gemini.schema.util.SourceResolver
 import fs2.Stream
 import fs2.concurrent.Topic
 import grackle.Env
-import grackle.Path
-import grackle.Query
 import grackle.Query.Binding
 import grackle.QueryCompiler.Elab
 import grackle.QueryCompiler.SelectElaborator
@@ -39,13 +37,7 @@ import lucuma.core.enums.M1Source
 import lucuma.core.enums.MountGuideOption
 import lucuma.core.enums.TipTiltSource
 import lucuma.core.math.Coordinates
-import lucuma.core.math.Declination
-import lucuma.core.math.Epoch
 import lucuma.core.math.Offset
-import lucuma.core.math.Parallax
-import lucuma.core.math.ProperMotion
-import lucuma.core.math.RadialVelocity
-import lucuma.core.math.RightAscension
 import lucuma.core.math.Wavelength
 import lucuma.core.model.M1GuideConfig
 import lucuma.core.model.M2GuideConfig
@@ -56,7 +48,6 @@ import lucuma.core.util.Gid
 import lucuma.core.util.TimeSpan
 import mouse.boolean.given
 import navigate.model.AcquisitionAdjustment
-import navigate.model.Distance
 import navigate.model.FocalPlaneOffset
 import navigate.model.FocalPlaneOffset.DeltaX
 import navigate.model.FocalPlaneOffset.DeltaY
@@ -123,13 +114,13 @@ class NavigateMappings[F[_]: Sync](
 ) extends CirceMapping[F] {
   import NavigateMappings._
 
-  def guideState(p: Path, env: Env): F[Result[GuideState]] =
+  def guideState: F[Result[GuideState]] =
     server.getGuideState.attempt.map(_.fold(Result.internalError, Result.success))
 
-  def telescopeState(p: Path, env: Env): F[Result[TelescopeState]] =
+  def telescopeState: F[Result[TelescopeState]] =
     server.getTelescopeState.attempt.map(_.fold(Result.internalError, Result.success))
 
-  def navigateState(p: Path, env: Env): F[Result[NavigateState]] =
+  def navigateState: F[Result[NavigateState]] =
     server.getNavigateState.attempt.map(_.fold(Result.internalError, Result.success))
 
   def targetAdjustmentOffsets: F[Result[TargetOffsets]]   =
@@ -140,7 +131,7 @@ class NavigateMappings[F[_]: Sync](
   def pointingAdjustmentOffset: F[Result[PointingCorrections]] =
     server.getPointingOffset.attempt.map(_.fold(Result.internalError, Result.success))
 
-  def instrumentPort(p: Path, env: Env): F[Result[Option[Int]]] =
+  def instrumentPort(env: Env): F[Result[Option[Int]]] =
     env
       .get[Instrument]("instrument")
       .map(ins =>
@@ -163,7 +154,7 @@ class NavigateMappings[F[_]: Sync](
     )
     .pure[F]
 
-  def mountFollow(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def mountFollow(env: Env): F[Result[OperationOutcome]] =
     env
       .get[Boolean]("enable")
       .map { en =>
@@ -180,7 +171,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure[OperationOutcome]("mountFollow parameter could not be parsed.").pure[F]
       )
 
-  def rotatorFollow(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def rotatorFollow(env: Env): F[Result[OperationOutcome]] =
     env
       .get[Boolean]("enable")
       .map { en =>
@@ -197,7 +188,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure("rotatorFollow parameter could not be parsed.").pure[F]
       )
 
-  def rotatorConfig(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def rotatorConfig(env: Env): F[Result[OperationOutcome]] =
     env
       .get[RotatorTrackConfig]("config")
       .map { cfg =>
@@ -214,7 +205,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure("rotatorConfig parameter could not be parsed.").pure[F]
       )
 
-  def scsFollow(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def scsFollow(env: Env): F[Result[OperationOutcome]] =
     env
       .get[Boolean]("enable")
       .map { en =>
@@ -231,7 +222,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure[OperationOutcome]("scsFollow parameter could not be parsed.").pure[F]
       )
 
-  def instrumentSpecifics(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def instrumentSpecifics(env: Env): F[Result[OperationOutcome]] =
     env
       .get[InstrumentSpecifics]("instrumentSpecificsParams")(using classTag[InstrumentSpecifics])
       .map { isp =>
@@ -250,7 +241,7 @@ class NavigateMappings[F[_]: Sync](
           .pure[F]
       )
 
-  def slew(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def slew(env: Env): F[Result[OperationOutcome]] = (for {
     oid <- env.get[Option[Observation.Id]]("obsId")
     so  <- env.get[SlewOptions]("slewOptions")
     tc  <- env.get[TcsConfig]("config")
@@ -265,7 +256,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome](s"Slew parameters $env oid could not be parsed.").pure[F]
   )
 
-  def tcsConfig(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def tcsConfig(env: Env): F[Result[OperationOutcome]] =
     env
       .get[TcsConfig]("config")(using classTag[TcsConfig])
       .map { tc =>
@@ -284,7 +275,7 @@ class NavigateMappings[F[_]: Sync](
           .pure[F]
       )
 
-  def swapTarget(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def swapTarget(env: Env): F[Result[OperationOutcome]] =
     env
       .get[SwapConfig]("swapConfig")(using classTag[SwapConfig])
       .map { t =>
@@ -303,7 +294,7 @@ class NavigateMappings[F[_]: Sync](
           .pure[F]
       )
 
-  def restoreTarget(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def restoreTarget(env: Env): F[Result[OperationOutcome]] =
     env
       .get[TcsConfig]("config")(using classTag[TcsConfig])
       .map { tc =>
@@ -322,7 +313,7 @@ class NavigateMappings[F[_]: Sync](
           .pure[F]
       )
 
-  def oiwfsTarget(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def oiwfsTarget(env: Env): F[Result[OperationOutcome]] =
     env
       .get[Target]("target")(using classTag[Target])
       .map { oi =>
@@ -339,7 +330,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure[OperationOutcome]("oiwfsTarget parameters could not be parsed.").pure[F]
       )
 
-  def oiwfsProbeTracking(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def oiwfsProbeTracking(env: Env): F[Result[OperationOutcome]] =
     env
       .get[TrackingConfig]("config")(using classTag[TrackingConfig])
       .map { tc =>
@@ -358,7 +349,7 @@ class NavigateMappings[F[_]: Sync](
           .pure[F]
       )
 
-  def oiwfsFollow(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def oiwfsFollow(env: Env): F[Result[OperationOutcome]] =
     env
       .get[Boolean]("enable")
       .map { en =>
@@ -409,7 +400,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure[OperationOutcome]("acObserve parameter could not be parsed.").pure[F]
       )
 
-  def guideEnable(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def guideEnable(env: Env): F[Result[OperationOutcome]] =
     env
       .get[TelescopeGuideConfig]("config")
       .map { cfg =>
@@ -426,7 +417,7 @@ class NavigateMappings[F[_]: Sync](
         Result.failure[OperationOutcome]("guideEnable parameters could not be parsed.").pure[F]
       )
 
-  def acquisitionAdjustment(p: Path, env: Env): F[Result[OperationOutcome]] =
+  def acquisitionAdjustment(env: Env): F[Result[OperationOutcome]] =
     env
       .get[AcquisitionAdjustment]("adjustment")
       .map { adj =>
@@ -443,7 +434,7 @@ class NavigateMappings[F[_]: Sync](
           .failure[OperationOutcome]("acquisitionAdjustment parameters could not be parsed.")
           .pure[F]
       }
-  def wfsSky(p: Path, env: Env): F[Result[OperationOutcome]]                = (for {
+  def wfsSky(env: Env): F[Result[OperationOutcome]]                = (for {
     wfs <- env.get[GuideProbe]("wfs")
     exp <- env.get[TimeSpan]("period")
   } yield server
@@ -456,7 +447,7 @@ class NavigateMappings[F[_]: Sync](
     ))
     .getOrElse(Result.failure[OperationOutcome]("WFS Sky parameters could not be parsed.").pure[F])
 
-  def lightpathConfig(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def lightpathConfig(env: Env): F[Result[OperationOutcome]] = (for {
     from <- env.get[LightSource]("from")
     to   <- env.get[LightSinkName]("to")
   } yield server
@@ -468,7 +459,7 @@ class NavigateMappings[F[_]: Sync](
       )
     )).getOrElse(Result.failure[OperationOutcome]("Slew parameters could not be parsed.").pure[F])
 
-  def adjustTarget(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def adjustTarget(env: Env): F[Result[OperationOutcome]] = (for {
     target    <- env.get[VirtualTelescope]("target")
     offset    <- env.get[HandsetAdjustment]("offset")
     openLoops <- env.get[Boolean]("openLoops")
@@ -483,7 +474,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome]("Target adjustment parameters could not be parsed.").pure[F]
   )
 
-  def adjustOrigin(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def adjustOrigin(env: Env): F[Result[OperationOutcome]] = (for {
     offset    <- env.get[HandsetAdjustment]("offset")
     openLoops <- env.get[Boolean]("openLoops")
   } yield server
@@ -497,7 +488,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome]("Origin adjustment parameters could not be parsed.").pure[F]
   )
 
-  def adjustPointing(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def adjustPointing(env: Env): F[Result[OperationOutcome]] = (for {
     offset <- env.get[HandsetAdjustment]("offset")
   } yield server
     .pointingAdjust(offset)
@@ -510,7 +501,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome]("Pointing adjustment parameters could not be parsed.").pure[F]
   )
 
-  def resetTargetAdjustment(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def resetTargetAdjustment(env: Env): F[Result[OperationOutcome]] = (for {
     target    <- env.get[VirtualTelescope]("target")
     openLoops <- env.get[Boolean]("openLoops")
   } yield server
@@ -524,7 +515,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome]("Clear target offset parameters could not be parsed.").pure[F]
   )
 
-  def absorbTargetAdjustment(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def absorbTargetAdjustment(env: Env): F[Result[OperationOutcome]] = (for {
     target <- env.get[VirtualTelescope]("target")
   } yield server
     .targetOffsetAbsorb(target)
@@ -537,7 +528,7 @@ class NavigateMappings[F[_]: Sync](
     Result.failure[OperationOutcome]("Absorb target offset parameters could not be parsed.").pure[F]
   )
 
-  def resetOriginAdjustment(p: Path, env: Env): F[Result[OperationOutcome]] = (for {
+  def resetOriginAdjustment(env: Env): F[Result[OperationOutcome]] = (for {
     openLoops <- env.get[Boolean]("openLoops")
   } yield server
     .originOffsetClear(openLoops)
@@ -814,10 +805,10 @@ class NavigateMappings[F[_]: Sync](
       ObjectMapping(
         tpe = QueryType,
         fieldMappings = List(
-          RootEffect.computeEncodable("guideState")((p, env) => guideState(p, env)),
-          RootEffect.computeEncodable("telescopeState")((p, env) => telescopeState(p, env)),
-          RootEffect.computeEncodable("navigateState")((p, env) => navigateState(p, env)),
-          RootEffect.computeEncodable("instrumentPort")((p, env) => instrumentPort(p, env)),
+          RootEffect.computeEncodable("guideState")((_, _) => guideState),
+          RootEffect.computeEncodable("telescopeState")((_, _) => telescopeState),
+          RootEffect.computeEncodable("navigateState")((_, _) => navigateState),
+          RootEffect.computeEncodable("instrumentPort")((_, env) => instrumentPort(env)),
           RootEffect.computeEncodable("serverVersion")((_, _) => serverVersion),
           RootEffect.computeEncodable("targetAdjustmentOffsets")((_, _) => targetAdjustmentOffsets),
           RootEffect.computeEncodable("originAdjustmentOffset")((_, _) => originAdjustmentOffset),
@@ -830,29 +821,25 @@ class NavigateMappings[F[_]: Sync](
       ObjectMapping(
         tpe = MutationType,
         fieldMappings = List(
-          RootEffect.computeEncodable("mountPark")((p, env) =>
-            parameterlessCommand(server.mcsPark)
-          ),
-          RootEffect.computeEncodable("mountFollow")((p, env) => mountFollow(p, env)),
-          RootEffect.computeEncodable("rotatorPark")((p, env) =>
+          RootEffect.computeEncodable("mountPark")((_, _) => parameterlessCommand(server.mcsPark)),
+          RootEffect.computeEncodable("mountFollow")((_, env) => mountFollow(env)),
+          RootEffect.computeEncodable("rotatorPark")((_, _) =>
             parameterlessCommand(server.rotPark)
           ),
-          RootEffect.computeEncodable("rotatorFollow")((p, env) => rotatorFollow(p, env)),
-          RootEffect.computeEncodable("rotatorConfig")((p, env) => rotatorConfig(p, env)),
-          RootEffect.computeEncodable("scsFollow")((p, env) => scsFollow(p, env)),
-          RootEffect.computeEncodable("tcsConfig")((p, env) => tcsConfig(p, env)),
-          RootEffect.computeEncodable("slew")((p, env) => slew(p, env)),
-          RootEffect.computeEncodable("swapTarget")((p, env) => swapTarget(p, env)),
-          RootEffect.computeEncodable("restoreTarget")((p, env) => restoreTarget(p, env)),
-          RootEffect.computeEncodable("instrumentSpecifics")((p, env) =>
-            instrumentSpecifics(p, env)
-          ),
-          RootEffect.computeEncodable("oiwfsTarget")((p, env) => oiwfsTarget(p, env)),
-          RootEffect.computeEncodable("oiwfsProbeTracking")((p, env) => oiwfsProbeTracking(p, env)),
-          RootEffect.computeEncodable("oiwfsPark")((p, env) =>
+          RootEffect.computeEncodable("rotatorFollow")((_, env) => rotatorFollow(env)),
+          RootEffect.computeEncodable("rotatorConfig")((_, env) => rotatorConfig(env)),
+          RootEffect.computeEncodable("scsFollow")((_, env) => scsFollow(env)),
+          RootEffect.computeEncodable("tcsConfig")((_, env) => tcsConfig(env)),
+          RootEffect.computeEncodable("slew")((_, env) => slew(env)),
+          RootEffect.computeEncodable("swapTarget")((_, env) => swapTarget(env)),
+          RootEffect.computeEncodable("restoreTarget")((_, env) => restoreTarget(env)),
+          RootEffect.computeEncodable("instrumentSpecifics")((_, env) => instrumentSpecifics(env)),
+          RootEffect.computeEncodable("oiwfsTarget")((_, env) => oiwfsTarget(env)),
+          RootEffect.computeEncodable("oiwfsProbeTracking")((_, env) => oiwfsProbeTracking(env)),
+          RootEffect.computeEncodable("oiwfsPark")((_, _) =>
             parameterlessCommand(server.oiwfsPark)
           ),
-          RootEffect.computeEncodable("oiwfsFollow")((p, env) => oiwfsFollow(p, env)),
+          RootEffect.computeEncodable("oiwfsFollow")((_, env) => oiwfsFollow(env)),
           RootEffect.computeEncodable("oiwfsObserve")((_, env) => oiwfsObserve(env)),
           RootEffect.computeEncodable("oiwfsStopObserve")((_, _) =>
             parameterlessCommand(server.oiwfsStopObserve)
@@ -861,64 +848,62 @@ class NavigateMappings[F[_]: Sync](
           RootEffect.computeEncodable("acStopObserve")((_, _) =>
             parameterlessCommand(server.acStopObserve)
           ),
-          RootEffect.computeEncodable("guideEnable")((p, env) => guideEnable(p, env)),
-          RootEffect.computeEncodable("guideDisable")((p, env) =>
+          RootEffect.computeEncodable("guideEnable")((_, env) => guideEnable(env)),
+          RootEffect.computeEncodable("guideDisable")((_, _) =>
             parameterlessCommand(server.disableGuide)
           ),
-          RootEffect.computeEncodable("m1Park")((p, env) => parameterlessCommand(server.m1Park)),
-          RootEffect.computeEncodable("m1Unpark")((p, env) =>
-            parameterlessCommand(server.m1Unpark)
-          ),
-          RootEffect.computeEncodable("m1OpenLoopOff")((p, env) =>
+          RootEffect.computeEncodable("m1Park")((_, _) => parameterlessCommand(server.m1Park)),
+          RootEffect.computeEncodable("m1Unpark")((_, _) => parameterlessCommand(server.m1Unpark)),
+          RootEffect.computeEncodable("m1OpenLoopOff")((_, _) =>
             parameterlessCommand(server.m1OpenLoopOff)
           ),
-          RootEffect.computeEncodable("m1OpenLoopOn")((p, env) =>
+          RootEffect.computeEncodable("m1OpenLoopOn")((_, _) =>
             parameterlessCommand(server.m1OpenLoopOn)
           ),
-          RootEffect.computeEncodable("m1ZeroFigure")((p, env) =>
+          RootEffect.computeEncodable("m1ZeroFigure")((_, _) =>
             parameterlessCommand(server.m1ZeroFigure)
           ),
-          RootEffect.computeEncodable("m1LoadAoFigure")((p, env) =>
+          RootEffect.computeEncodable("m1LoadAoFigure")((_, _) =>
             parameterlessCommand(server.m1LoadAoFigure)
           ),
-          RootEffect.computeEncodable("m1LoadNonAoFigure")((p, env) =>
+          RootEffect.computeEncodable("m1LoadNonAoFigure")((_, _) =>
             parameterlessCommand(server.m1LoadNonAoFigure)
           ),
-          RootEffect.computeEncodable("lightpathConfig")((p, env) => lightpathConfig(p, env)),
-          RootEffect.computeEncodable("acquisitionAdjustment") { (p, env) =>
-            acquisitionAdjustment(p, env)
+          RootEffect.computeEncodable("lightpathConfig")((_, env) => lightpathConfig(env)),
+          RootEffect.computeEncodable("acquisitionAdjustment") { (_, env) =>
+            acquisitionAdjustment(env)
           },
-          RootEffect.computeEncodable("wfsSky") { (p, env) =>
-            wfsSky(p, env)
+          RootEffect.computeEncodable("wfsSky") { (_, env) =>
+            wfsSky(env)
           },
-          RootEffect.computeEncodable("adjustTarget") { (p, env) =>
-            adjustTarget(p, env)
+          RootEffect.computeEncodable("adjustTarget") { (_, env) =>
+            adjustTarget(env)
           },
-          RootEffect.computeEncodable("adjustPointing") { (p, env) =>
-            adjustPointing(p, env)
+          RootEffect.computeEncodable("adjustPointing") { (_, env) =>
+            adjustPointing(env)
           },
-          RootEffect.computeEncodable("adjustOrigin") { (p, env) =>
-            adjustOrigin(p, env)
+          RootEffect.computeEncodable("adjustOrigin") { (_, env) =>
+            adjustOrigin(env)
           },
-          RootEffect.computeEncodable("resetTargetAdjustment")((p, env) =>
-            resetTargetAdjustment(p, env)
+          RootEffect.computeEncodable("resetTargetAdjustment")((_, env) =>
+            resetTargetAdjustment(env)
           ),
-          RootEffect.computeEncodable("absorbTargetAdjustment")((p, env) =>
-            absorbTargetAdjustment(p, env)
+          RootEffect.computeEncodable("absorbTargetAdjustment")((_, env) =>
+            absorbTargetAdjustment(env)
           ),
-          RootEffect.computeEncodable("resetLocalPointingAdjustment")((p, env) =>
+          RootEffect.computeEncodable("resetLocalPointingAdjustment")((_, _) =>
             parameterlessCommand(server.pointingOffsetClearLocal)
           ),
-          RootEffect.computeEncodable("resetGuidePointingAdjustment")((p, env) =>
+          RootEffect.computeEncodable("resetGuidePointingAdjustment")((_, _) =>
             parameterlessCommand(server.pointingOffsetClearGuide)
           ),
-          RootEffect.computeEncodable("absorbGuidePointingAdjustment")((p, env) =>
+          RootEffect.computeEncodable("absorbGuidePointingAdjustment")((_, _) =>
             parameterlessCommand(server.pointingOffsetAbsorbGuide)
           ),
-          RootEffect.computeEncodable("resetOriginAdjustment")((p, env) =>
-            resetOriginAdjustment(p, env)
+          RootEffect.computeEncodable("resetOriginAdjustment")((_, env) =>
+            resetOriginAdjustment(env)
           ),
-          RootEffect.computeEncodable("absorbOriginAdjustment")((p, env) =>
+          RootEffect.computeEncodable("absorbOriginAdjustment")((_, _) =>
             parameterlessCommand(server.originOffsetAbsorb)
           )
         )
@@ -1111,9 +1096,9 @@ object NavigateMappings extends GrackleParsers {
   )
 
   def parseNonSiderealTarget(
-    name: String,
-    w:    Option[Wavelength],
-    l:    List[(String, Value)]
+    @annotation.unused name: String,
+    @annotation.unused w:    Option[Wavelength],
+    @annotation.unused l:    List[(String, Value)]
   ): Option[Target.SiderealTarget] = none
 
   def parseAzElTarget(
@@ -1133,9 +1118,9 @@ object NavigateMappings extends GrackleParsers {
   )
 
   def parseEphemerisTarget(
-    name: String,
-    w:    Option[Wavelength],
-    l:    List[(String, Value)]
+    @annotation.unused name: String,
+    @annotation.unused w:    Option[Wavelength],
+    @annotation.unused l:    List[(String, Value)]
   ): Option[Target.EphemerisTarget] = none
 
   def parseTargetInput(l: List[(String, Value)]): Option[Target] = for {

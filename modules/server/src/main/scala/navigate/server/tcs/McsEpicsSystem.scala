@@ -4,10 +4,8 @@
 package navigate.server.tcs
 
 import cats.Applicative
-import cats.Parallel
 import cats.effect.Resource
 import cats.effect.Temporal
-import cats.effect.std.Dispatcher
 import cats.syntax.all.*
 import eu.timepit.refined.types.string.NonEmptyString
 import navigate.epics.*
@@ -33,7 +31,7 @@ object McsEpicsSystem {
           }
     }
 
-  def build[F[_]: {Dispatcher, Temporal, Parallel}](
+  def build[F[_]: Temporal](
     service: EpicsService[F],
     top:     NonEmptyString
   ): Resource[F, McsEpicsSystem[F]] =

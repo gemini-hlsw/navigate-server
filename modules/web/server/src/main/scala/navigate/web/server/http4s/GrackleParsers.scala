@@ -7,7 +7,6 @@ import cats.syntax.all.*
 import coulomb.*
 import coulomb.policy.spire.standard.given
 import coulomb.syntax.*
-import coulomb.units.si.prefixes.*
 import grackle.Value
 import grackle.Value.FloatValue
 import grackle.Value.IntValue

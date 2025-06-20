@@ -3,7 +3,6 @@
 
 package navigate.server.tcs
 
-import cats.Parallel
 import cats.effect.Ref
 import cats.effect.Temporal
 import monocle.Focus
@@ -93,7 +92,7 @@ object TestAgsEpicsSystem {
     sfName = new TestChannel[F, State, String](s, Focus[State](_.sfName))
   )
 
-  def build[F[_]: {Temporal, Parallel}](
+  def build[F[_]: Temporal](
     s: Ref[F, State]
   ): AgsEpicsSystem[F] = AgsEpicsSystem.buildSystem(buildChannels(s))
 }

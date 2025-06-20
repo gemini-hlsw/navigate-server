@@ -29,7 +29,6 @@ import lucuma.core.util.Enumerated
 import lucuma.core.util.TimeSpan
 import monocle.Focus.focus
 import monocle.Getter
-import monocle.syntax.all.*
 import mouse.boolean.given
 import navigate.epics.VerifiedEpics
 import navigate.epics.VerifiedEpics.*
@@ -1256,7 +1255,7 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel, Logger}](
       case LightSinkName.Nifs                                                      => instrumentPorts.nifsPort
       case LightSinkName.Gnirs                                                     => instrumentPorts.gnirsPort
       case LightSinkName.Visitor                                                   => 0
-      case LightSinkName.F2                                                        => instrumentPorts.flamingos2Port
+      case LightSinkName.Flamingos2                                                => instrumentPorts.flamingos2Port
       case LightSinkName.Gsaoi                                                     => instrumentPorts.gsaoiPort
       case LightSinkName.Gpi                                                       => instrumentPorts.gpiPort
       case LightSinkName.Ghost                                                     => instrumentPorts.ghostPort

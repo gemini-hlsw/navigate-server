@@ -542,9 +542,9 @@ object NavigateEngine {
       )
 
     override def wfsSky(wfs: GuideProbe, period: TimeSpan): F[Unit] = wfs match {
-      case enums.GuideProbe.PWFS1                                => Applicative[F].unit
-      case enums.GuideProbe.PWFS2                                => Applicative[F].unit
-      case enums.GuideProbe.GmosOIWFS | enums.GuideProbe.F2OIWFS =>
+      case enums.GuideProbe.PWFS1                                        => Applicative[F].unit
+      case enums.GuideProbe.PWFS2                                        => Applicative[F].unit
+      case enums.GuideProbe.GmosOIWFS | enums.GuideProbe.Flamingos2OIWFS =>
         simpleCommand(
           engine,
           WfsSky(wfs, period),

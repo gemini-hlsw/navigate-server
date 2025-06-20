@@ -9,7 +9,6 @@ import cats.effect.std.Dispatcher
 import cats.effect.syntax.all.*
 import cats.syntax.all.*
 import clue.http4s.Http4sHttpBackend
-import com.comcast.ip4s.Dns
 import fs2.Stream
 import fs2.compression.Compression
 import fs2.io.file.Files
@@ -77,11 +76,10 @@ object WebServerLauncher extends IOApp with LogInitialization {
     )
 
   /** Resource that yields the running web server */
-  def webServer[F[_]: {Logger, Async, Dns, Files, Compression, Network}](
-    conf:      NavigateConfiguration,
-    topics:    TopicManager[F],
-    se:        NavigateEngine[F],
-    clientsDb: ClientsSetDb[F]
+  def webServer[F[_]: {Logger, Async, Files, Compression, Network}](
+    conf:   NavigateConfiguration,
+    topics: TopicManager[F],
+    se:     NavigateEngine[F]
   ): Resource[F, Server] = {
     val ssl: F[Option[TLSContext[F]]] = conf.webServer.tls.traverse(makeContext[F])
 
@@ -219,7 +217,7 @@ object WebServerLauncher extends IOApp with LogInitialization {
         cs     <- Resource.eval(ClientsSetDb.create[IO])
         _      <- Resource.eval(publishStats(cs).compile.drain.start)
         engine <- engineIO(conf, cli)
-        _      <- webServer[IO](conf, topics, engine, cs)
+        _      <- webServer[IO](conf, topics, engine)
         f      <- Resource.eval(topics.startAll(engine))
         _      <- Resource.eval(f.join)        // We need to join to catch uncaught errors
       } yield ExitCode.Success

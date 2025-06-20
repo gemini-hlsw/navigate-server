@@ -7,7 +7,6 @@ import cats.Monad
 import cats.Parallel
 import cats.effect.Resource
 import cats.effect.Temporal
-import cats.effect.std.Dispatcher
 import cats.syntax.all.*
 import eu.timepit.refined.types.string.NonEmptyString
 import lucuma.refined.*
@@ -58,7 +57,7 @@ object WfsEpicsSystem {
     }
   }
 
-  def build[F[_]: {Dispatcher, Temporal, Parallel}](
+  def build[F[_]: {Temporal, Parallel}](
     service:             EpicsService[F],
     sysName:             String,
     top:                 NonEmptyString,

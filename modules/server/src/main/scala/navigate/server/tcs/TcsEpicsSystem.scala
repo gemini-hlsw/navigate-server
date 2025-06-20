@@ -1119,7 +1119,7 @@ object TcsEpicsSystem {
           tcsEpics.m2FollowCmd.setParam1(enable.fold(BinaryOnOff.On, BinaryOnOff.Off))
         )
 
-    private def buildAgMechCommands[A: Encoder[*, String]](
+    private def buildAgMechCommands[A](
       c: AgMechCommandsChannels[F, A]
     ): AgMechCommands[F, A, TcsCommands[F]] =
       new AgMechCommands[F, A, TcsCommands[F]] {
@@ -1326,10 +1326,10 @@ object TcsEpicsSystem {
   }
 
   given Encoder[GuideProbe, String] = _ match {
-    case GuideProbe.GmosOIWFS => "OIWFS"
-    case GuideProbe.F2OIWFS   => "OIWFS"
-    case GuideProbe.PWFS1     => "PWFS1"
-    case GuideProbe.PWFS2     => "PWFS2"
+    case GuideProbe.GmosOIWFS       => "OIWFS"
+    case GuideProbe.Flamingos2OIWFS => "OIWFS"
+    case GuideProbe.PWFS1           => "PWFS1"
+    case GuideProbe.PWFS2           => "PWFS2"
   }
 
   given Encoder[CentralBafflePosition, String] = _ match {
@@ -1637,7 +1637,7 @@ object TcsEpicsSystem {
       writeCadParam[F, BinaryOnOff](tt, probeGuideChannels.nodbchopb)(v)
   }
 
-  case class ProbeCommandsChannels[F[_]: Monad](
+  case class ProbeCommandsChannels[F[_]](
     park:   ParameterlessCommandChannels[F],
     follow: Command1Channels[F, BinaryOnOff]
   )
@@ -1716,7 +1716,7 @@ object TcsEpicsSystem {
         .map(_.map(Enumerated[BinaryOnOff].fromTag(_).getOrElse(BinaryOnOff.Off)))
   }
 
-  trait PointingCorrectionState[F[_]: Applicative] {
+  trait PointingCorrectionState[F[_]] {
     def localCA: VerifiedEpics[F, F, Angle]
     def localCE: VerifiedEpics[F, F, Angle]
     def guideCA: VerifiedEpics[F, F, Angle]
@@ -1745,7 +1745,7 @@ object TcsEpicsSystem {
       }
   }
 
-  case class AgMechCommandsChannels[F[_]: Monad, A](
+  case class AgMechCommandsChannels[F[_], A](
     park:     ParameterlessCommandChannels[F],
     position: Command1Channels[F, A]
   )
@@ -1758,7 +1758,7 @@ object TcsEpicsSystem {
     Command1Channels(tt, mechChannels.position)
   )
 
-  case class M1CommandsChannels[F[_]: Monad](
+  case class M1CommandsChannels[F[_]](
     park:          Command1Channels[F, String],
     figureUpdates: Command1Channels[F, BinaryOnOff],
     zero:          Command1Channels[F, String],
@@ -1782,7 +1782,7 @@ object TcsEpicsSystem {
     )
   }
 
-  case class WfsCommandsChannels[F[_]: Monad](
+  case class WfsCommandsChannels[F[_]](
     observe:    Command7Channels[F, Int, Double, String, String, String, String, String],
     stop:       ParameterlessCommandChannels[F],
     signalProc: Command1Channels[F, String],
@@ -1918,11 +1918,11 @@ object TcsEpicsSystem {
     val follow: FollowCommand[F, TcsCommands[F]]
   }
 
-  trait MoveCommand[F[_], A: Encoder[*, String], +S] {
+  trait MoveCommand[F[_], A, +S] {
     def setPosition(v: A): S
   }
 
-  trait AgMechCommands[F[_], A: Encoder[*, String], +S] {
+  trait AgMechCommands[F[_], A, +S] {
     val park: BaseCommand[F, TcsCommands[F]]
     val move: MoveCommand[F, A, TcsCommands[F]]
   }

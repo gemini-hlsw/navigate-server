@@ -7,7 +7,6 @@ import cats.Parallel
 import cats.effect.Ref
 import cats.effect.Temporal
 import monocle.Focus
-import navigate.epics.EpicsSystem
 import navigate.epics.EpicsSystem.TelltaleChannel
 import navigate.epics.TestChannel
 import navigate.server.acm.CadDirective

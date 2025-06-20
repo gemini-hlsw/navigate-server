@@ -6,7 +6,6 @@ package edu.gemini.schema.util
 import cats.effect.IO
 import grackle.Result.Success
 import grackle.{Result, Schema}
-import munit.Assertions.*
 import munit.CatsEffectSuite
 
 import java.nio.file.Path

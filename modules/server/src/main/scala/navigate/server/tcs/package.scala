@@ -200,7 +200,7 @@ def readTop(tops: Map[String, String], key: NonEmptyString): NonEmptyString =
 extension (i: Instrument) {
   def toLightSink: LightSinkName = i match
     case Instrument.AcqCam     => LightSinkName.Ac
-    case Instrument.Flamingos2 => LightSinkName.F2
+    case Instrument.Flamingos2 => LightSinkName.Flamingos2
     case Instrument.Ghost      => LightSinkName.Ghost
     case Instrument.GmosNorth  => LightSinkName.Gmos
     case Instrument.GmosSouth  => LightSinkName.Gmos

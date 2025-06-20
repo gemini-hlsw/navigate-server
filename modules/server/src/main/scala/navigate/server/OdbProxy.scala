@@ -12,6 +12,8 @@ import lucuma.schemas.ObservationDB
 import navigate.queries.ObsQueriesGQL.AddSlewEventMutation
 import org.typelevel.log4cats.Logger
 
+import scala.language.implicitConversions
+
 trait OdbProxy[F[_]] {
   def addSlewEvent(
     obsId: Observation.Id,
