@@ -53,7 +53,7 @@ object Settings {
 
     // Lucuma
     val lucumaCore    = "0.141.1"
-    val lucumaSchemas = "0.151.1"
+    val lucumaSchemas = "0.152.0"
     val lucumaSSO     = "0.9.6"
 
     val grackle = "0.25.0"
