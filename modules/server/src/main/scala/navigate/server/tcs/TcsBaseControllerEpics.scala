@@ -11,6 +11,7 @@ import cats.syntax.all.*
 import coulomb.*
 import coulomb.policy.spire.standard.given
 import coulomb.units.accepted.ArcSecond
+import lucuma.core.enums
 import lucuma.core.enums.ComaOption
 import lucuma.core.enums.GuideProbe
 import lucuma.core.enums.Instrument
@@ -78,6 +79,7 @@ import navigate.model.enums.DeployableBafflePosition
 import navigate.model.enums.DomeMode
 import navigate.model.enums.HrwfsPickupPosition
 import navigate.model.enums.LightSource
+import navigate.model.enums.OiwfsWavelength
 import navigate.model.enums.ShutterMode
 import navigate.model.enums.VirtualTelescope
 import navigate.server
@@ -418,6 +420,13 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel, Logger}](
             setTarget(Getter[TcsCommands[F], TargetCommand[F, TcsCommands[F]]](_.oiwfsTargetCmd),
                       o.target
             )
+              .compose[TcsCommands[F]](x =>
+                x.oiwfsWavel.wavelength(
+                  Wavelength.decimalMicrometers
+                    .reverseGet(getOiwfsWavelegth(config.instrument))
+                    .doubleValue
+                )
+              )
               .compose(
                 setProbeTracking(Getter[TcsCommands[F], ProbeTrackingCommand[F, TcsCommands[F]]](
                                    _.oiwfsProbeTrackingCommand
@@ -435,6 +444,13 @@ abstract class TcsBaseControllerEpics[F[_]: {Async, Parallel, Logger}](
             )
           )
       )
+
+  protected def getOiwfsWavelegth(instrument: Instrument): Wavelength = (instrument match {
+    case Instrument.Flamingos2 => OiwfsWavelength.Flamingos2Oiwfs
+    case Instrument.GmosNorth  => OiwfsWavelength.GmosOiwfs
+    case Instrument.GmosSouth  => OiwfsWavelength.GmosOiwfs
+    case _                     => OiwfsWavelength.K
+  }).wavel
 
   // The difference between this and the full applyTcsConfig is that here we keep the instrument parameters, but set
   // the origin for the AC.

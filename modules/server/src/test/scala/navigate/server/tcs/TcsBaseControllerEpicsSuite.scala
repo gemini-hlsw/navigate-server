@@ -75,6 +75,7 @@ import navigate.model.enums.CentralBafflePosition
 import navigate.model.enums.DeployableBafflePosition
 import navigate.model.enums.DomeMode
 import navigate.model.enums.LightSource
+import navigate.model.enums.OiwfsWavelength
 import navigate.model.enums.ShutterMode
 import navigate.model.enums.VirtualTelescope
 import navigate.server.ApplyCommandResult
@@ -327,16 +328,34 @@ class TcsBaseControllerEpicsSuite extends CatsEffectSuite {
                   )
       rs       <- st.tcs.get
     } yield {
-      // Base Target
+      // Targets
       checkTarget(rs.sourceA, target)
       checkTarget(rs.pwfs1Target, pwfs1Target)
       checkTarget(rs.pwfs2Target, pwfs2Target)
       checkTarget(rs.oiwfsTarget, oiwfsTarget)
 
-      // OIWFS probe tracking
+      // WFS probe tracking
       checkTracking(rs.pwfs1Tracking, wfsTracking)
       checkTracking(rs.pwfs2Tracking, wfsTracking)
       checkTracking(rs.oiwfsTracking, wfsTracking)
+
+      rs.wavelSourceA.value
+        .flatMap(_.toDoubleOption)
+        .fold(fail("No Source A wavelength set"))(v =>
+          assertEqualsDouble(
+            v,
+            target.wavelength.map(_.toMicrometers.value.value.toDouble).getOrElse(0.0),
+            1e-6
+          )
+        )
+      rs.wavelOiwfs.value
+        .flatMap(_.toDoubleOption)
+        .fold(fail("No OIWFS wavelength set"))(v =>
+          assertEqualsDouble(v,
+                             OiwfsWavelength.GmosOiwfs.wavel.toMicrometers.value.value.toDouble,
+                             1e-6
+          )
+        )
 
       // Slew Options
       assert(rs.slew.zeroChopThrow.connected)
@@ -621,12 +640,12 @@ class TcsBaseControllerEpicsSuite extends CatsEffectSuite {
   ): IO[Unit] = {
     val target = SiderealTarget(
       objectName = "Dummy",
-      wavelength = Wavelength.fromIntPicometers(600 * 1000),
+      wavelength = none,
       coordinates = Coordinates.unsafeFromRadians(-0.123, 0.321),
       epoch = Epoch.J2000,
-      properMotion = none,
-      radialVelocity = none,
-      parallax = none
+      properMotion = ProperMotion(ProperMotion.μasyRA(1000), ProperMotion.μasyDec(2000)).some,
+      radialVelocity = RadialVelocity.kilometerspersecond.getOption(30),
+      parallax = Parallax.fromMicroarcseconds(500).some
     )
 
     for {
