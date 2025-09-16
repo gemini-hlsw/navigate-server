@@ -9,7 +9,6 @@ import cats.effect.Ref
 import cats.effect.Temporal
 import cats.syntax.all.*
 import coulomb.*
-import coulomb.policy.spire.standard.given
 import coulomb.units.accepted.ArcSecond
 import lucuma.core.enums
 import lucuma.core.enums.ComaOption

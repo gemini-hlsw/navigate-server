@@ -8,7 +8,7 @@ import cats.effect.Resource
 import cats.effect.Temporal
 import cats.syntax.all.*
 import eu.timepit.refined.types.string.NonEmptyString
-import lucuma.refined.*
+import lucuma.core.refined.auto.*
 import navigate.epics.EpicsService
 import navigate.epics.EpicsSystem.TelltaleChannel
 import navigate.epics.VerifiedEpics
