@@ -3,9 +3,9 @@
 
 package navigate.web.server.http4s
 
+import algebra.instances.all.*
 import cats.syntax.all.*
 import coulomb.*
-import coulomb.policy.spire.standard.given
 import coulomb.syntax.*
 import grackle.Value
 import grackle.Value.FloatValue
@@ -27,6 +27,8 @@ import lucuma.core.syntax.string.*
 import lucuma.core.util.Enumerated
 import lucuma.core.util.TimeSpan
 import navigate.model.Distance
+
+import scala.language.implicitConversions
 
 trait GrackleParsers {
 

@@ -2259,39 +2259,42 @@ class TcsBaseControllerEpicsSuite extends CatsEffectSuite {
   }
 
   test("Set AC filter") {
-    val v = AcFilter.R_Red2
-    for {
-      (st, ctr) <- createController()
-      _         <- ctr.acCommands.filter(v)
-      r1        <- st.ac.get
-    } yield {
-      assert(r1.filter.connected)
-      assertEquals(r1.filter.value, v.tag.some)
-    }
+    Enumerated[AcFilter].all.map { v =>
+      for {
+        (st, ctr) <- createController()
+        _         <- ctr.acCommands.filter(v)
+        r1        <- st.ac.get
+      } yield {
+        assert(r1.filter.connected)
+        assertEquals(r1.filter.value, v.tag.some)
+      }
+    }.sequence
   }
 
   test("Set AC lens") {
-    val v = AcLens.Ac
-    for {
-      (st, ctr) <- createController()
-      _         <- ctr.acCommands.lens(v)
-      r1        <- st.ac.get
-    } yield {
-      assert(r1.lens.connected)
-      assertEquals(r1.lens.value, v.tag.some)
-    }
+    Enumerated[AcLens].all.map { v =>
+      for {
+        (st, ctr) <- createController()
+        _         <- ctr.acCommands.lens(v)
+        r1        <- st.ac.get
+      } yield {
+        assert(r1.lens.connected)
+        assertEquals(r1.lens.value, v.tag.some)
+      }
+    }.sequence
   }
 
   test("Set AC ND filter") {
-    val v = AcNdFilter.Nd100
-    for {
-      (st, ctr) <- createController()
-      _         <- ctr.acCommands.ndFilter(v)
-      r1        <- st.ac.get
-    } yield {
-      assert(r1.ndFilter.connected)
-      assertEquals(r1.ndFilter.value, v.tag.some)
-    }
+    Enumerated[AcNdFilter].all.map { v =>
+      for {
+        (st, ctr) <- createController()
+        _         <- ctr.acCommands.ndFilter(v)
+        r1        <- st.ac.get
+      } yield {
+        assert(r1.ndFilter.connected)
+        assertEquals(r1.ndFilter.value, v.tag.some)
+      }
+    }.sequence
   }
 
   test("Set AC window") {

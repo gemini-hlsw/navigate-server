@@ -12,7 +12,7 @@ import clue.FetchClient
 import clue.http4s.Http4sHttpBackend
 import clue.http4s.Http4sHttpClient
 import lucuma.core.enums.Site
-import lucuma.refined.*
+import lucuma.core.refined.auto.*
 import lucuma.schemas.ObservationDB
 import mouse.boolean.*
 import navigate.epics.EpicsService

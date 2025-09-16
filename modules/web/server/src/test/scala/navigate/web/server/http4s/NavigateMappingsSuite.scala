@@ -32,6 +32,7 @@ import lucuma.core.model.M1GuideConfig
 import lucuma.core.model.M2GuideConfig
 import lucuma.core.model.Observation
 import lucuma.core.model.TelescopeGuideConfig
+import lucuma.core.syntax.string.*
 import lucuma.core.util.Enumerated
 import lucuma.core.util.TimeSpan
 import lucuma.core.util.Timestamp
@@ -2074,72 +2075,78 @@ class NavigateMappingsSuite extends CatsEffectSuite {
   }
 
   test("Set AC lens") {
-    for {
-      mp <- buildMapping()
-      p  <- mp.compileAndRun(
-              """
-          |mutation {
-          |  acLens(lens: HRWFS) {
-          |    result
-          |  }
-          |}
-          |""".stripMargin
-            )
-    } yield assertEquals(
-      p.hcursor
-        .downField("data")
-        .downField("acLens")
-        .downField("result")
-        .as[String]
-        .toOption,
-      "SUCCESS".some
-    )
+    Enumerated[AcLens].all.map { v =>
+      for {
+        mp <- buildMapping()
+        p  <- mp.compileAndRun(
+                s"""
+             |mutation {
+             |  acLens(lens: ${v.tag.toScreamingSnakeCase}) {
+             |    result
+             |  }
+             |}
+             |""".stripMargin
+              )
+      } yield assertEquals(
+        p.hcursor
+          .downField("data")
+          .downField("acLens")
+          .downField("result")
+          .as[String]
+          .toOption,
+        "SUCCESS".some
+      )
+    }.sequence
   }
 
   test("Set AC filter") {
-    for {
-      mp <- buildMapping()
-      p  <- mp.compileAndRun(
-              """
-          |mutation {
-          |  acFilter(filter: B_BLUE) {
-          |    result
-          |  }
-          |}
-          |""".stripMargin
-            )
-    } yield assertEquals(
-      p.hcursor
-        .downField("data")
-        .downField("acFilter")
-        .downField("result")
-        .as[String]
-        .toOption,
-      "SUCCESS".some
-    )
+    Enumerated[AcFilter].all.map { v =>
+      for {
+        mp <- buildMapping()
+        p  <- mp.compileAndRun(
+                s"""
+            |mutation {
+            |  acFilter(filter: ${v.tag.toScreamingSnakeCase}) {
+            |    result
+            |  }
+            |}
+            |""".stripMargin
+              )
+      } yield assertEquals(
+        p.hcursor
+          .downField("data")
+          .downField("acFilter")
+          .downField("result")
+          .as[String]
+          .toOption,
+        "SUCCESS".some
+      )
+    }.sequence
   }
 
   test("Set AC ND Filter") {
-    for {
-      mp <- buildMapping()
-      p  <- mp.compileAndRun(
-              """
-          |mutation {
-          |  acNdFilter(ndFilter: ND100) {
-          |    result
-          |  }
-          |}
-          |""".stripMargin
-            )
-    } yield assertEquals(
-      p.hcursor
-        .downField("data")
-        .downField("acNdFilter")
-        .downField("result")
-        .as[String]
-        .toOption,
-      "SUCCESS".some
-    )
+    Enumerated[AcNdFilter].all.map { v =>
+      for {
+        mp <- buildMapping()
+        p  <- mp.compileAndRun(
+                s"""
+            |mutation {
+            |  acNdFilter(ndFilter: ${v.tag.toScreamingSnakeCase}) {
+            |    result
+            |  }
+            |}
+            |""".stripMargin
+              )
+      } yield assertEquals(
+        p.hcursor
+          .downField("data")
+          .downField("acNdFilter")
+          .downField("result")
+          .as[String]
+          .toOption,
+        "SUCCESS".some
+      )
+    }.sequence
   }
 
   test("Set AC window") {
@@ -2147,18 +2154,18 @@ class NavigateMappingsSuite extends CatsEffectSuite {
       mp <- buildMapping()
       p  <- mp.compileAndRun(
               """
-          |mutation {
-          |  acWindowSize(size: {
-          |    type: WINDOW_200X200
-          |    center: {
-          |      x: 123
-          |      y: 456
-          |    }
-          |  }) {
-          |    result
-          |  }
-          |}
-          |""".stripMargin
+            |mutation {
+            |  acWindowSize(size: {
+            |    type: WINDOW_200X200
+            |    center: {
+            |      x: 123
+            |      y: 456
+            |    }
+            |  }) {
+            |    result
+            |  }
+            |}
+            |""".stripMargin
             )
     } yield assertEquals(
       p.hcursor

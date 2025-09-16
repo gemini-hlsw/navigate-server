@@ -26,7 +26,7 @@ object Distance {
   extension (d: Distance) {
 
     private def to[U](scale: Int): Quantity[BigDecimal, U] =
-      Quantity[U](BigDecimal(toMicrometers.value, scale))
+      BigDecimal(toMicrometers.value, scale).withUnit[U]
 
     def toMicrometers: Quantity[Long, Micrometer] = d
     def µm: Quantity[Long, Micrometer]            = toMicrometers

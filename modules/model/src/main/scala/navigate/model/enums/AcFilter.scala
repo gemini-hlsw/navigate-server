@@ -6,10 +6,10 @@ package navigate.model.enums
 import lucuma.core.util.Enumerated
 
 enum AcFilter(val tag: String) derives Enumerated {
-  case Neutral extends AcFilter("Neutral")
-  case U_Red1  extends AcFilter("U_Red1")
-  case B_Blue  extends AcFilter("B_Blue")
-  case V_Green extends AcFilter("V_Green")
-  case R_Red2  extends AcFilter("R_Red2")
-  case I_Red3  extends AcFilter("I_Red3")
+  case Neutral extends AcFilter("neutral")
+  case U_Red1  extends AcFilter("U_red1")
+  case B_Blue  extends AcFilter("B_blue")
+  case V_Green extends AcFilter("V_green")
+  case R_Red2  extends AcFilter("R_red2")
+  case I_Red3  extends AcFilter("I_red3")
 }

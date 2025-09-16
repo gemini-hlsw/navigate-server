@@ -20,7 +20,6 @@ import navigate.model.NavigateState
 import navigate.model.PointingCorrections
 import navigate.model.PwfsMechsState
 import navigate.model.ServerConfiguration
-import navigate.model.enums.AcNdFilter
 import navigate.server.tcs.GuideState
 import navigate.server.tcs.GuidersQualityValues
 import navigate.server.tcs.MechSystemState
